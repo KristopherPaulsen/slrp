@@ -1,33 +1,24 @@
 {
-  "name": "@kcpaulsen/ish",
-  "version": "1.1.4",
-  "description": "Fuzzy command line cli tool",
+  "name": "@kcpaulsen/slrp",
+  "version": "1.0.0",
+  "description": "Making node one-liners great again",
   "main": "./index.js",
   "scripts": {
     "test": "jest"
   },
   "keywords": [
-    "fuzzy",
-    "fzy",
-    "fzf",
-    "fuse",
-    "search",
     "cli"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kristopherpaulsen/ish.git"
+    "url": "https://github.com/kristopherpaulsen/slrp.git"
   },
   "author": "Kristopher C. Paulsen",
   "license": "MIT",
-  "dependencies": {
-    "fuse.js": "^3.4.5"
-  },
   "bin": {
     "slrp": "./index.js"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "lodash": "^4.17.15"
+    "jest": "^24.9.0"
   }
 }
