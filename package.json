@@ -24,7 +24,7 @@
     "fuse.js": "^3.4.5"
   },
   "bin": {
-    "ish": "./index.js"
+    "slrp": "./index.js"
   },
   "devDependencies": {
     "jest": "^24.9.0",
