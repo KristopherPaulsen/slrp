@@ -6,10 +6,10 @@ const path = require('path');
 
 const main = async () => {
   const args = yargs
-    .option('print', {
-      alias: 'p',
+    .option('--test', {
+      alias: 'test',
       type: 'boolean',
-      describe: 'To print, or not to print, that is the question',
+      describe: 'testing',
       coerce: arg => typeof(arg) !== undefined,
     })
     .argv;
@@ -31,7 +31,7 @@ const main = async () => {
     eval(stringFunc)(result)
   ), stdin.trim());
 
-  if(args.print) console.log(result);
+  console.log(result);
 }
 
 main();
