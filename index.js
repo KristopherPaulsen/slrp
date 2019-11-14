@@ -33,15 +33,18 @@ const main = async () => {
     }
   }
 
-  const stdin = getStdin(args);
-
-  const stringFuncs = args._;
-
-  const result = stringFuncs.reduce((result, stringFunc) => (
-    eval(stringFunc)(result)
-  ), stdin);
+  const result = runStringFuncs({
+    stdin: getStdin(args),
+    stringFuncs: args._,
+  });
 
   printFormatted(args, result);
+}
+
+const runStringFuncs = ({ stringFuncs, stdin }) => {
+  return stringFuncs.reduce((result, stringFunc) => (
+    eval(stringFunc)(result)
+  ), stdin);
 }
 
 const getStdin = args => {
