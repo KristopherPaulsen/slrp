@@ -35,17 +35,20 @@ const main = async () => {
 
   const result = runStringFuncs({
     stdin: getStdin(args),
-    stringFuncs: args._,
+    funcs: args._,
   });
 
   printFormatted(args, result);
 }
 
-const runStringFuncs = ({ stringFuncs, stdin }) => {
-  return stringFuncs.reduce((result, stringFunc) => (
-    eval(stringFunc)(result)
-  ), stdin);
-}
+const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+  if(typeof(func) === 'string' && func.match(/\[\d+\]|^\./)) {
+    return eval(`result${func}`);
+  }
+
+  return eval(func)(result);
+
+}, stdin);
 
 const getStdin = args => {
   const rawStdin = fs.readFileSync(0, 'utf8');
