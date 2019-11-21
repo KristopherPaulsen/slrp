@@ -3,8 +3,8 @@ const yargs = require('yargs');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const print = require('./print.js');
 const utils = require('./utils');
+/* eslint-disable-next-line */
 let $, _;
 
 const main = async () => {
@@ -89,7 +89,7 @@ const printFormatted = (args, result) => {
   } else if(args.rawJson) {
     console.log(JSON.stringify(JSON.stringify(result)));
   } else {
-    console.log(print(result)[0])
+    console.log(result)
   }
 }
 
