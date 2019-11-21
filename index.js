@@ -53,7 +53,7 @@ const requireGlobalFunctions = () => {
 
     Object.assign(global, globalNamespace);
 
-    throwIfHelperGlobalNamespaceClash(helper);
+    throwIfUnallowedHelper(helper);
 
     eval(`${helper} = utils`);
 
@@ -64,8 +64,9 @@ const requireGlobalFunctions = () => {
   }
 }
 
-const throwIfHelperGlobalNamespaceClash = (helper) => {
-  const allowedHelpers = ['_', '$']
+const throwIfUnallowedHelper = (helper) => {
+  const allowedHelpers = ['_', '$', '$$', '__'];
+
   if(!allowedHelpers.includes(helper)) {
     throw new Error(`
 
