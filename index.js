@@ -3,9 +3,6 @@ const yargs = require('yargs');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const utils = require('./utils');
-/* eslint-disable-next-line */
-let $, _;
 
 const main = async () => {
   const args = yargs
@@ -49,31 +46,11 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
 
 const requireGlobalFunctions = () => {
   try {
-    const { helper = '_', globalNamespace } = require(path.join(os.homedir(), '.config', 'slrp'));
-
-    Object.assign(global, globalNamespace);
-
-    throwIfUnallowedHelper(helper);
-
-    eval(`${helper} = utils`);
-
+    require(path.join(os.homedir(), '.config', 'slrp'));
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
       throw err
     }
-  }
-}
-
-const throwIfUnallowedHelper = (helper) => {
-  const allowedHelpers = ['_', '$', '$$', '__'];
-
-  if(!allowedHelpers.includes(helper)) {
-    throw new Error(`
-
-      ${helper} not in approved list of alternative variables.
-      Please use one of the following: ${allowedHelpers.join(', ')}
-
-    `)
   }
 }
 
