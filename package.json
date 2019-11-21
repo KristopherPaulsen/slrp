@@ -19,6 +19,8 @@
     "slrp": "./index.js"
   },
   "devDependencies": {
+    "chalk": "^3.0.0",
+    "indent-string": "^4.0.0",
     "jest": "^24.9.0"
   }
 }

@@ -3,6 +3,7 @@ const yargs = require('yargs');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const print = require('./print.js');
 
 const main = async () => {
   const args = yargs
@@ -62,7 +63,7 @@ const printFormatted = (args, result) => {
   } else if(args.rawJson) {
     console.log(JSON.stringify(JSON.stringify(result)));
   } else {
-    console.log(result)
+    console.log(print(result)[0])
   }
 }
 
