@@ -49,11 +49,11 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
 
 const requireGlobalFunctions = () => {
   try {
-    const { helper, globalNamespace } = require(path.join(os.homedir(), '.config', 'slrp'));
+    const { helper = '_', globalNamespace } = require(path.join(os.homedir(), '.config', 'slrp'));
 
     Object.assign(global, globalNamespace);
 
-    throwIfHelperGlobalNamespaceClash();
+    throwIfHelperGlobalNamespaceClash(helper);
 
     eval(`${helper} = utils`);
 
@@ -64,11 +64,15 @@ const requireGlobalFunctions = () => {
   }
 }
 
-const throwIfHelperGlobalNamespaceClash = (helper = '') => {
-  if(helper in global) {
-    throw new Error(
-      `${helper} is already defined in global namespace, try a different name.`
-    )
+const throwIfHelperGlobalNamespaceClash = (helper) => {
+  const allowedHelpers = ['_', '$']
+  if(!allowedHelpers.includes(helper)) {
+    throw new Error(`
+
+      ${helper} not in approved list of alternative variables.
+      Please use one of the following: ${allowedHelpers.join(', ')}
+
+    `)
   }
 }
 
