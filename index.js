@@ -49,9 +49,9 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
 
 const requireGlobalFunctions = () => {
   try {
-    const { helper, addToGlobal } = require(path.join(os.homedir(), '.config', 'slrp'));
+    const { helper, globalNamespace } = require(path.join(os.homedir(), '.config', 'slrp'));
 
-    Object.assign(global, addToGlobal);
+    Object.assign(global, globalNamespace);
 
     throwIfHelperGlobalNamespaceClash();
 
