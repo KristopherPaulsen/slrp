@@ -3,6 +3,7 @@ const yargs = require('yargs');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const util = require('util')
 
 const main = async () => {
   const args = yargs
@@ -62,12 +63,16 @@ const getStdin = args => {
 
 const printFormatted = (args, result) => {
   if(args.json) {
-    console.log(JSON.stringify(result));
+    print(JSON.stringify(result));
   } else if(args.rawJson) {
-    console.log(JSON.stringify(JSON.stringify(result)));
+    print(JSON.stringify(JSON.stringify(result)));
   } else {
-    console.log(result)
+    print(result);
   }
+}
+
+const print = (...args) => {
+  console.log(util.inspect(...args, { colors: true, maxArrayLength: null }))
 }
 
 main();
