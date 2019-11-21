@@ -4,6 +4,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const print = require('./print.js');
+const utils = require('./utils');
+let $, _;
 
 const main = async () => {
   const args = yargs
@@ -26,13 +28,7 @@ const main = async () => {
     })
     .argv;
 
-  try {
-    require(path.join(os.homedir(), '.config', 'slrp'));
-  } catch (err) {
-    if (err.code !== 'MODULE_NOT_FOUND') {
-      throw err
-    }
-  }
+  requireGlobalFunctions();
 
   const result = runStringFuncs({
     stdin: getStdin(args),
@@ -50,6 +46,31 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   return eval(func)(result);
 
 }, stdin);
+
+const requireGlobalFunctions = () => {
+  try {
+    const { helper, addToGlobal } = require(path.join(os.homedir(), '.config', 'slrp'));
+
+    Object.assign(global, addToGlobal);
+
+    throwIfHelperGlobalNamespaceClash();
+
+    eval(`${helper} = utils`);
+
+  } catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') {
+      throw err
+    }
+  }
+}
+
+const throwIfHelperGlobalNamespaceClash = (helper = '') => {
+  if(helper in global) {
+    throw new Error(
+      `${helper} is already defined in global namespace, try a different name.`
+    )
+  }
+}
 
 const getStdin = args => {
   const rawStdin = fs.readFileSync(0, 'utf8');
