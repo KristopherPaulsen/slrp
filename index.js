@@ -3,7 +3,6 @@ const yargs = require('yargs');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const util = require('util')
 
 const main = async () => {
   const args = yargs
@@ -63,16 +62,19 @@ const getStdin = args => {
 
 const printFormatted = (args, result) => {
   if(args.json) {
-    print(JSON.stringify(result));
+    console.log(JSON.stringify(result));
   } else if(args.rawJson) {
-    print(JSON.stringify(JSON.stringify(result)));
+    console.log(JSON.stringify(JSON.stringify(result)));
   } else {
-    print(result);
+    console.log(result)
   }
 }
 
-const print = (...args) => {
-  console.log(util.inspect(...args, { colors: true, maxArrayLength: null }))
-}
-
 main();
+
+//if (process.stdout.isTTY) {
+  //console.log('not redirected');
+//}
+//else {
+  //console.log('redirected');
+//}
