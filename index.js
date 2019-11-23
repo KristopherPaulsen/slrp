@@ -70,7 +70,7 @@ const requireGlobalFunctions = () => {
 const getStdin = args => {
   const rawStdin = readFileSync(args.file || 0, 'utf8');
 
-  if(args.split) {
+  if(args.newline) {
     return rawStdin.trim().split("\n");
   }
 
