@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
-const fs = require('fs');
+const { readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
 
@@ -12,16 +12,11 @@ const main = async () => {
       describe: 'split stdin by newlines into array of strings',
       coerce: arg => typeof(arg) !== undefined,
     })
-    .option('json', {
-      type: 'boolean',
-      describe: 'Whether or not to return json',
-      coerce: arg => typeof(arg) !== undefined,
-    })
-    .option('rawJson', {
-      alias: 'raw-json',
-      type: 'boolean',
-      describe: 'Whether or not to return as raw json string',
-      coerce: arg => typeof(arg) !== undefined,
+    .option('file', {
+      alias: 'f',
+      type: 'string',
+      describe: 'split stdin by newlines into array of strings',
+      coerce: path.resolve,
     })
     .argv;
 
@@ -32,7 +27,7 @@ const main = async () => {
     funcs: args._,
   });
 
-  printFormatted(args, result);
+  console.log(result);
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
@@ -55,26 +50,15 @@ const requireGlobalFunctions = () => {
 }
 
 const getStdin = args => {
-  const rawStdin = fs.readFileSync(0, 'utf8');
+  const rawStdin = readFileSync(args.file || 0, 'utf8');
 
-  return args.split ? rawStdin.trim().split("\n") : rawStdin.trim();
-}
-
-const printFormatted = (args, result) => {
-  if(args.json) {
-    console.log(JSON.stringify(result));
-  } else if(args.rawJson) {
-    console.log(JSON.stringify(JSON.stringify(result)));
-  } else {
-    console.log(result)
+  if(args.split) {
+    return rawStdin.trim().split("\n");
   }
+
+  return rawStdin.trim();
 }
+
+// -----------------------------------------------------------------------------
 
 main();
-
-//if (process.stdout.isTTY) {
-  //console.log('not redirected');
-//}
-//else {
-  //console.log('redirected');
-//}
