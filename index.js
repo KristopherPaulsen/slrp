@@ -26,7 +26,7 @@ const main = async () => {
     .option('file', {
       alias: 'f',
       type: 'string',
-      describe: 'split stdin by newlines into array of strings',
+      describe: 'path to file to use as stdin',
       coerce: path.resolve,
     })
     .epilogue(epilogue)
