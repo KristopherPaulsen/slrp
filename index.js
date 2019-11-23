@@ -4,8 +4,19 @@ const { readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
 
+const example = `
+  echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
+
+  # 6
+`;
+
+const epilogue = `
+
+`;
+
 const main = async () => {
   const args = yargs
+    .example(example)
     .option('split', {
       alias: 's',
       type: 'boolean',
@@ -18,6 +29,7 @@ const main = async () => {
       describe: 'split stdin by newlines into array of strings',
       coerce: path.resolve,
     })
+    .epilogue(epilogue)
     .argv;
 
   requireGlobalFunctions();
@@ -61,3 +73,4 @@ const getStdin = args => {
 // -----------------------------------------------------------------------------
 
 main();
+
