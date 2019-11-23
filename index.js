@@ -17,14 +17,14 @@ const epilogue = `
 const main = async () => {
   const args = yargs
     .example(example)
-    .option('split', {
-      alias: 's',
+    .option('newline', {
+      alias: ['new-line', 'n'],
       type: 'boolean',
       describe: 'split stdin by newlines into array of strings',
       coerce: arg => typeof(arg) !== undefined,
     })
     .option('white', {
-      alias: 'w',
+      alias: ['white-space', 'w'],
       type: 'boolean',
       describe: 'split stdin by whitespace into array of strings',
       coerce: arg => typeof(arg) !== undefined,
