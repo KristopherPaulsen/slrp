@@ -29,6 +29,12 @@ const main = async () => {
       describe: 'split stdin by whitespace into array of strings',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('json', {
+      alias: 'j',
+      type: 'boolean',
+      describe: 'parse incoming json into object',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .option('file', {
       alias: 'f',
       type: 'string',
@@ -69,6 +75,10 @@ const requireGlobalFunctions = () => {
 
 const getStdin = args => {
   const rawStdin = readFileSync(args.file || 0, 'utf8');
+
+  if(args.json) {
+    return JSON.parse(rawStdin);
+  }
 
   if(args.newline) {
     return rawStdin.trim().split("\n");

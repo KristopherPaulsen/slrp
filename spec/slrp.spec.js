@@ -127,6 +127,16 @@ describe('slrp', () => {
 
       expect(result).toMatch("I am\ntest text.");
     });
+
+    it('slurps json into a parsed, usable, object', () => {
+      const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
+        input: JSON.stringify({ someKey: "some value" }),
+      });
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toMatch("some value");
+    });
   })
 
   describe('chaning funcs, flags, and files', () => {
