@@ -25,7 +25,6 @@ describe('slrp', () => {
       expect(result).toMatch('10');
     });
 
-    // chains two function calls together
     it('calls required functions from custom functions file (lodash global methods)', () => {
       const slrp = spawnSync('./index.js', ['size'], {
         input: 'hello',
@@ -87,6 +86,16 @@ describe('slrp', () => {
       const result = slrp.stdout.toString();
 
       expect(result).toMatch('5');
+    })
+
+    it('can combine multiple indexing', () => {
+      const slrp = spawnSync('./index.js', ['[0][0]'], {
+        input: 'hello world'
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(result).toMatch('h');
     })
   })
 
