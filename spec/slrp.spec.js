@@ -96,7 +96,7 @@ describe('slrp', () => {
       const result = slrp.stdout.toString();
 
       expect(result).toMatch('h');
-    })
+    });
   })
 
   describe('flags', () => {
