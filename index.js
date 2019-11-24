@@ -18,13 +18,13 @@ const main = async () => {
   const args = yargs
     .example(example)
     .option('newline', {
-      alias: ['new-line', 'n'],
+      alias: 'n',
       type: 'boolean',
       describe: 'split stdin by newlines into array of strings',
       coerce: arg => typeof(arg) !== undefined,
     })
-    .option('white', {
-      alias: ['white-space', 'w'],
+    .option('white-space', {
+      alias: 'w',
       type: 'boolean',
       describe: 'split stdin by whitespace into array of strings',
       coerce: arg => typeof(arg) !== undefined,
@@ -74,7 +74,7 @@ const getStdin = args => {
     return rawStdin.trim().split("\n");
   }
 
-  if(args.white) {
+  if(args['white-space']) {
     return rawStdin.trim().split(" ");
   }
 
