@@ -49,7 +49,7 @@ const main = async () => {
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
-  if(typeof(func) === 'string' && func.match(/\[\d+\]|^\./)) {
+  if(typeof(func) === 'string' && func.match(/^\[|^\.\w/)) {
     return eval(`result${func}`);
   }
 
