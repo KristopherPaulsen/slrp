@@ -78,6 +78,16 @@ describe('slrp', () => {
 
       expect(result).toMatch('hello');
     })
+
+    it('can combine indexing AND method calls', () => {
+      const slrp = spawnSync('./index.js', ['x => x.split(" ")', '[0].length'], {
+        input: 'hello world'
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(result).toMatch('5');
+    })
   })
 
   describe('flags', () => {
