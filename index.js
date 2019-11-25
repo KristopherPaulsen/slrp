@@ -51,6 +51,14 @@ const main = async () => {
     funcs: args._,
   });
 
+  printFormatted(result);
+
+}
+
+const printFormatted = (result) => {
+  if((typeof result).match(/array|object/i)) {
+    return console.log(JSON.stringify(result, null, 2));
+  }
   console.log(result);
 }
 
