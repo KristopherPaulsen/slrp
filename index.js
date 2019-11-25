@@ -64,6 +64,9 @@ const printFormatted = (result) => {
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+  if(typeof(func) === 'string' && func.match(/^\.$/)) {
+    return result;
+  }
   if(typeof(func) === 'string' && func.match(/^\[|^\.\w/)) {
     return eval(`result${func}`);
   }
