@@ -3,6 +3,7 @@ const yargs = require('yargs');
 const { readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
+const { assign } = Object;
 
 const example = `
   echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
@@ -73,7 +74,8 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
 
 const requireGlobalFunctions = () => {
   try {
-    require(path.join(os.homedir(), '.config', 'slrp'));
+    const { globalFunctions } = require(path.join(os.homedir(), '.config', 'slrp'));
+    assign(global, globalFunctions);
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
       throw err
