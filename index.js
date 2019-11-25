@@ -57,6 +57,9 @@ const main = async () => {
 }
 
 const printFormatted = (result) => {
+  if(result === undefined || (typeof result).match('undefined')) {
+    return;
+  }
   if((typeof result).match(/array|object/i)) {
     return console.log(JSON.stringify(result, null, 2));
   }
