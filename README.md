@@ -96,7 +96,18 @@ slrp -s '() => console.log("Just me!")'
 
 ## Custom Functions
 
-TODO
+You can include custom functions to be imported / required as part of slrp.
+Any functions installed globally by npm, and included in the config file will be available
+
+* Add to $HOME/.config/slrp/index.js
+
+```
+module.exports = {
+  globalFunctions: {
+    ...require('lodash/fp'),
+  }
+}
+```
 
 ## About
 
