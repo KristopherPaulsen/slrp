@@ -56,11 +56,10 @@ const main = async () => {
   });
 
   printFormatted(args, result);
-
 }
 
 const printFormatted = (args, result) => {
-  if(args.silent || result === undefined || (typeof result).match('undefined')) {
+  if(args.silent || args.exec || result === undefined || (typeof result).match('undefined')) {
     return;
   }
   if((typeof result).match(/array|object/i)) {
