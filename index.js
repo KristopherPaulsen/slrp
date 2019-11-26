@@ -46,8 +46,8 @@ const main = async () => {
     .option('silent', {
       alias: 's',
       type: 'boolean',
-      describe: 'whether or not to automatically print last result.\n' +
-                'Toggling on will allow you to controll output yourself.',
+      describe: 'Toggling on will allow you to controll output yourself,\n' +
+                'and remove automatic printing of last result.',
       coerce: arg => typeof(arg) !== undefined,
     })
     .epilogue(epilogue)
@@ -116,6 +116,7 @@ const getStdin = args => {
   }
 
   if(args.newline) {
+    console.log('WAT')
     return rawStdin.trim().split("\n");
   }
 
