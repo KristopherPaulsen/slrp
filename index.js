@@ -43,6 +43,13 @@ const main = async () => {
       describe: 'path to file to use as stdin',
       coerce: path.resolve,
     })
+    .option('silent', {
+      alias: 's',
+      type: 'boolean',
+      describe: 'whether or not to automatically print last result.\n' +
+                'Toggling on will allow you to controll output yourself.',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .epilogue(epilogue)
     .argv;
 
@@ -53,12 +60,12 @@ const main = async () => {
     funcs: args._,
   });
 
-  printFormatted(result);
+  printFormatted(args, result);
 
 }
 
-const printFormatted = (result) => {
-  if(result === undefined || (typeof result).match('undefined')) {
+const printFormatted = (args, result) => {
+  if(args.silent || result === undefined || (typeof result).match('undefined')) {
     return;
   }
   if((typeof result).match(/array|object/i)) {
