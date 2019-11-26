@@ -4,6 +4,7 @@ const { readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
 const { assign } = Object;
+const colorize = require('json-colorizer');
 
 const example = `
   echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
@@ -61,10 +62,21 @@ const printFormatted = (result) => {
     return;
   }
   if((typeof result).match(/array|object/i)) {
-    return console.log(JSON.stringify(result, null, 2));
+    return console.log(withColor(JSON.stringify(result, null, 2)));
   }
   console.log(result);
 }
+
+const withColor = (data) => colorize(data, {
+  colors: {
+    STRING_KEY: 'blueBright',
+    STRING_LITERAL: 'green',
+    BRACE: 'whiteBright',
+    BRACKET: 'whiteBright',
+    COMMA: 'whiteBright',
+    COLON: 'whiteBright'
+  }
+});
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   if(typeof(func) === 'string' && func.match(/^\.$/)) {
@@ -110,4 +122,3 @@ const getStdin = args => {
 // -----------------------------------------------------------------------------
 
 main();
-
