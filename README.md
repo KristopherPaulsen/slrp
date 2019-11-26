@@ -62,7 +62,7 @@ slrp provides multiple flags for easier one-liners
 split stdin into array of strings by newline
 
 ```bash
-  echo -e "Hello\nWorld" slrp -n [0]
+  echo -e "Hello\nWorld" | slrp -n [0]
 
   # Hello
 ```
@@ -72,7 +72,7 @@ split stdin into array of strings by newline
 split stdin into array of strings by whitespace
 
 ```bash
-  echo -e "Hello World" slrp -w [1]
+  echo -e "Hello World" | slrp -w [1]
 
   # World
 ```
