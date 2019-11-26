@@ -40,6 +40,12 @@ const main = async () => {
                 'and remove automatic printing of last result.',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('exec', {
+      alias: 'e',
+      type: 'boolean',
+      describe: 'Run in execute mode, no longer using stdin',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .argv;
 
   requireGlobalFunctions();
@@ -98,14 +104,13 @@ const requireGlobalFunctions = () => {
 }
 
 const getStdin = args => {
-  const rawStdin = readFileSync(args.file || 0, 'utf8');
+  const rawStdin = args.exec ? '' : readFileSync(args.file || 0, 'utf8');
 
   if(args.json) {
     return JSON.parse(rawStdin);
   }
 
   if(args.newline) {
-    console.log('WAT')
     return rawStdin.trim().split("\n");
   }
 
