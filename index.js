@@ -6,19 +6,9 @@ const path = require('path');
 const { assign } = Object;
 const colorize = require('json-colorizer');
 
-const example = `
-  echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
-
-  # 6
-`;
-
-const epilogue = `
-
-`;
-
 const main = async () => {
   const args = yargs
-    .example(example)
+    .example(example())
     .option('newline', {
       alias: 'n',
       type: 'boolean',
@@ -50,7 +40,6 @@ const main = async () => {
                 'and remove automatic printing of last result.',
       coerce: arg => typeof(arg) !== undefined,
     })
-    .epilogue(epilogue)
     .argv;
 
   requireGlobalFunctions();
@@ -126,6 +115,12 @@ const getStdin = args => {
 
   return rawStdin.trim();
 }
+
+const example = () => `
+  echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
+
+  # 6
+`;
 
 // -----------------------------------------------------------------------------
 
