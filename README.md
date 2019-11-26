@@ -87,12 +87,24 @@ slurp file path and use as stdin
 
 `-s`
 
-Silence, or suppress automatic printing of result. Useful for sideffect one-liners
+Silence, or suppress automatic printing of result. Useful for side-effect one-liners,
+or controlling printing yourself
 
 ```bash
-slrp -s '() => console.log("Just me!")'
+echo "Just me" | slrp -s 'x => console.log(x)'
 
 # Just me!
+```
+
+`-e`
+
+Execute sequence of commands without stdin. Usefull for side-effect one-liners
+
+
+```bash
+slrp -e '() => console.log("No stdin!")'
+
+# No stdin!
 ```
 
 ## Custom Functions
