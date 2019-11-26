@@ -43,7 +43,7 @@ const main = async () => {
     .option('exec', {
       alias: 'e',
       type: 'boolean',
-      describe: 'Run in execute mode, no longer using stdin',
+      describe: 'Run in execute mode, no longer using stdin. Runs in silent by default (see -s)',
       coerce: arg => typeof(arg) !== undefined,
     })
     .argv;
