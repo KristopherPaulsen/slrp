@@ -5,95 +5,99 @@
 
 ## Getting Started
 
-  ```bash
-  npm install -g @kcpaulsen/slrp
-  ```
+```bash
+npm install -g @kcpaulsen/slrp
+```
 
-  ```bash
-  echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
+```bash
+echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
-  # 6
-  ```
+# 6
+```
 
 ## Chaining Functions
 
-  slrp allows for chaining results of one function to another.
+slrp allows for chaining results of one function to another.
 
-  ```bash
-  echo "Hello, World" | slrp 'x => x.split(" ")' 'x => x.map(word => word.length)'
+```bash
+echo "Hello, World" | slrp 'x => x.split(" ")' 'x => x.map(word => word.length)'
 
-  [
-    6,
-    5
-  ]
-  ```
+[
+  6,
+  5
+]
+```
 
-  You can also use the property assessor shorthand for easier manipulation
+You can also use the property assessor shorthand for easier manipulation
 
-  ```bash
-  echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
+```bash
+echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
-  # 6
-  ```
+# 6
+```
 
-  Manipulate the stdin as a string
+Manipulate the stdin as a string
 
-  ```bash
-  echo "Hello, World" | slrp 'x => x.replace(/o/gi, "0")'
+```bash
+echo "Hello, World" | slrp 'x => x.replace(/o/gi, "0")'
 
-  # Hell0, W0rld
-  ```
+# Hell0, W0rld
+```
 
-  Use Custom functions (like lodash/fp) for easier commands (See Custom Functions)
+Use Custom functions (like lodash/fp) for easier commands (See Custom Functions)
 
-  ```bash
-  echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
+```bash
+echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
 
-  # 11
-  ```
+# 11
+```
 
 ## Flags
 
-  slrp provides multiple flags for easier one-liners
+slrp provides multiple flags for easier one-liners
 
-  `-n`
+`-n`
 
-    split stdin into array of strings by newline
+split stdin into array of strings by newline
 
-    ```bash
-      echo -e "Hello\nWorld" slrp -n [0]
+```bash
+  echo -e "Hello\nWorld" slrp -n [0]
 
-      # Hello
-    ```
+  # Hello
+```
 
-  `-n`
+`-w`
 
-    split stdin into array of strings by whitespace
+split stdin into array of strings by whitespace
 
-    ```bash
-      echo -e "Hello World" slrp -w [1]
+```bash
+  echo -e "Hello World" slrp -w [1]
 
-      # World
-    ```
+  # World
+```
 
-  `-f`
+`-f`
 
-    slurp file path and use as stdin
+slurp file path and use as stdin
 
-    ```bash
-      slrp -f 'path/to/file/here' 'x => someFunctionHere()'
-    ```
+```bash
+  slrp -f 'path/to/file/here' 'x => someFunctionHere()'
+```
 
-  `-s`
+`-s`
 
-    Silence, or suppress automatic printing of result. Useful for sideffect one-liners
+Silence, or suppress automatic printing of result. Useful for sideffect one-liners
 
-    ```
-    slrp -s '() => console.log("Just me!")'
+```bash
+slrp -s '() => console.log("Just me!")'
 
-    # Just me!
-    ```
+# Just me!
+```
+
+## Custom Functions
+
+TODO
 
 ## About
 
-  Heavily inspired by fx and other node command line utilities
+Heavily inspired by fx and other node command line utilities
