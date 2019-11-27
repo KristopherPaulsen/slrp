@@ -57,6 +57,35 @@ echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
 
 slrp provides multiple flags for easier one-liners
 
+`-j`
+
+slurp stdin string into parsed object.
+
+```bash
+  curl pants.rip/echo | slrp -j .
+
+  {
+    "reqCookies": {},
+    "url": "/",
+    "params": {},
+    "body": {},
+    "query": {},
+    "reqHeaders": {
+      "host": "pants.rip",
+      "x-real-ip": "136.60.239.136",
+      "x-forwarded-proto": "https",
+      "x-forwarded-for": "136.60.239.136",
+      "x-forwarded-host": "136.60.239.136",
+      "connection": "close",
+      "user-agent": "curl/7.58.0",
+      "accept": "*/*"
+    },
+    "resHeaders": {
+      "x-powered-by": "Express"
+    }
+  }
+```
+
 `-n`
 
 split stdin into array of strings by newline
