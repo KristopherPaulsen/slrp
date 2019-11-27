@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
-const { readFileSync } = require('fs');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const os = require('os');
 const path = require('path');
 const { assign } = Object;
@@ -46,6 +46,18 @@ const main = async () => {
       describe: 'Run in execute mode, no longer using stdin. Runs in silent by default (see -s)',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('in-place', {
+      alias: 'i',
+      type: 'string',
+      describe: 'edit the file in-place',
+      coerce: arg => {
+        if(typeof(arg) === 'string' && !arg.length) {
+          return true;
+        }
+
+        return false;
+      },
+    })
     .argv;
 
   requireGlobalFunctions();
@@ -59,6 +71,9 @@ const main = async () => {
 }
 
 const printFormatted = (args, result) => {
+  if(args.inPlace) {
+    return printToFile(args, result);
+  }
   if(args.silent || args.exec || result === undefined || (typeof result).match('undefined')) {
     return;
   }
@@ -66,6 +81,20 @@ const printFormatted = (args, result) => {
     return console.log(withColor(JSON.stringify(result, null, 2)));
   }
   console.log(result);
+}
+
+const printToFile = (args, rawResult) => {
+  const result = typeof(rawResult) === 'string' ? rawResult : JSON.stringify(rawResult);
+
+  if(args.inPlace.length) {
+    const tempPath = path.resolve(args.file, args.inPlace);
+
+    writeFileSync(tempPath, result, 'utf8');
+    writeFileSync(args.file, result);
+    unlinkSync(tempPath);
+  }
+
+  writeFileSync(args.file, result, 'utf8');
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
