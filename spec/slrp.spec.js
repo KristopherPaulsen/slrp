@@ -125,7 +125,7 @@ describe('slrp', () => {
     });
 
     it('-f  slurps up file', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt']);
+      const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt']);
 
       const result = slrp.stdout.toString().trim();
 
@@ -175,7 +175,7 @@ describe('slrp', () => {
 
   describe('chaning funcs, flags, and files', () => {
     it('-n, -f  splits newlines and slurps file', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt', '-n']);
+      const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
 
       const result = slrp.stdout.toString().trim();
 
@@ -183,7 +183,7 @@ describe('slrp', () => {
     });
 
     it('-w, -f  splits whitespace and slurps file', () => {
-      const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/test-file.txt']);
+      const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/newline-separated-sentences.txt']);
 
       const result = slrp.stdout.toString().trim();
 
