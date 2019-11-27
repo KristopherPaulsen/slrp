@@ -74,7 +74,7 @@ const printFormatted = (args, result) => {
   if(args.inPlace) {
     return printToFile(args, result);
   }
-  if(args.silent || args.exec || result === undefined || (typeof result).match('undefined')) {
+  if(args.silent || args.exec || result === undefined) {
     return;
   }
   if((typeof result).match(/array|object/i)) {
