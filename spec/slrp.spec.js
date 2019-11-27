@@ -104,7 +104,7 @@ describe('slrp', () => {
   })
 
   describe('flags', () => {
-    it('splits newlines with -n', () => {
+    it('-n  splits newlines', () => {
       const slrp = spawnSync('./index.js', ['-n'], {
         input: 'what\nis\nthis',
       });
@@ -114,7 +114,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual([ 'what', 'is', 'this' ]);
     });
 
-    it('splits whitespace with -w', () => {
+    it('-w  splits whitespace', () => {
       const slrp = spawnSync('./index.js', ['-w'], {
         input: 'what is this',
       });
@@ -124,7 +124,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual(['what', 'is', 'this' ]);
     });
 
-    it('slurps up file -f', () => {
+    it('-f  slurps up file', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt']);
 
       const result = slrp.stdout.toString().trim();
@@ -132,7 +132,7 @@ describe('slrp', () => {
       expect(result).toMatch("I am\ntest text.");
     });
 
-    it('slurps json into a parsed, usable, object -j', () => {
+    it('-j  slurps json into a parsed, usable, object', () => {
       const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
         input: JSON.stringify({ someKey: "some value" }),
       });
@@ -142,7 +142,7 @@ describe('slrp', () => {
       expect(result).toEqual("some value");
     });
 
-    it('returns nothing if using silent flag without explicit printing -s', () => {
+    it('-s  returns nothing if using silent flag without explicit printing', () => {
       const slrp = spawnSync('./index.js', ['-s'], {
         input: JSON.stringify({ someKey: "some value" }),
       });
@@ -152,7 +152,7 @@ describe('slrp', () => {
       expect(result).toEqual('');
     });
 
-    it('only prints if user specifies when using silent flag -s', () => {
+    it('-s  prints ONLY user-specified output', () => {
       const slrp = spawnSync('./index.js',  ['-s', '() => console.log("custom print")'], {
         input: 'unused',
       });
@@ -162,7 +162,7 @@ describe('slrp', () => {
       expect(result).toEqual('custom print');
     });
 
-    it('executes single statement without stdin using -e', () => {
+    it('-e  executes single statement without stdin', () => {
       const slrp = spawnSync('./index.js', ['-e', '() => console.log("custom print")']);
 
       const result = slrp.stdout.toString().trim();
@@ -174,7 +174,7 @@ describe('slrp', () => {
   })
 
   describe('chaning funcs, flags, and files', () => {
-    it('splits newlines with -n and slurps file', () => {
+    it('-n, -f  splits newlines and slurps file', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt', '-n']);
 
       const result = slrp.stdout.toString().trim();
@@ -182,7 +182,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual([ 'I am', 'test text.' ]);
     });
 
-    it('splits whitespace with -w and slurps file', () => {
+    it('-w, -f  splits whitespace and slurps file', () => {
       const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/test-file.txt']);
 
       const result = slrp.stdout.toString().trim();
