@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { withColor } = require('../with-color.js');
 
 describe('slrp', () => {
 
@@ -148,12 +149,12 @@ describe('slrp', () => {
       expect(result).toMatch("[ 'I am', 'test text.' ]");
     });
 
-    it('splits whitespace with -w and slurps file', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt', '-w']);
+    fit('splits whitespace with -w and slurps file', () => {
+      const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/test-file.txt']);
 
       const result = slrp.stdout.toString().trim();
 
-      expect(result).toMatch("[ 'I', 'am\\ntest', 'text.' ]");
+      expect(JSON.parse(result)).toEqual([ 'I', 'am\ntest', 'text.' ]);
     });
   });
 

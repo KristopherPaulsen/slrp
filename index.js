@@ -4,7 +4,7 @@ const { readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
 const { assign } = Object;
-const colorize = require('json-colorizer');
+const { withColor } = require('./with-color.js')
 
 const main = async () => {
   const args = yargs
@@ -67,17 +67,6 @@ const printFormatted = (args, result) => {
   }
   console.log(result);
 }
-
-const withColor = (data) => colorize(data, {
-  colors: {
-    STRING_KEY: 'blueBright',
-    STRING_LITERAL: 'green',
-    BRACE: 'whiteBright',
-    BRACKET: 'whiteBright',
-    COMMA: 'whiteBright',
-    COLON: 'whiteBright'
-  }
-});
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   if(typeof(func) === 'string' && func.match(/^\.$/)) {
