@@ -85,16 +85,15 @@ const printFormatted = (args, result) => {
 
 const printToFile = (args, rawResult) => {
   const result = typeof(rawResult) === 'string' ? rawResult : JSON.stringify(rawResult);
+  const tempPath = path.resolve(args.file, args.inPlace);
 
   if(args.inPlace.length) {
-    const tempPath = path.resolve(args.file, args.inPlace);
-
     writeFileSync(tempPath, result, 'utf8');
     writeFileSync(args.file, result);
     unlinkSync(tempPath);
+  } else {
+    writeFileSync(args.file, result, 'utf8');
   }
-
-  writeFileSync(args.file, result, 'utf8');
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
