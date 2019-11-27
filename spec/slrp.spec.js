@@ -3,6 +3,8 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const { withColor } = require('../with-color.js');
 
+const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
+
 describe('slrp', () => {
 
   describe('chaining functions', () => {
@@ -108,7 +110,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(JSON.parse(result)).toEqual([ 'what', 'is', 'this' ]);
+      expect(parsedNoColor(result)).toEqual([ 'what', 'is', 'this' ]);
     });
 
     it('splits whitespace with -w', () => {
@@ -118,10 +120,10 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(JSON.parse(result)).toEqual(['what', 'is', 'this' ]);
+      expect(parsedNoColor(result)).toEqual(['what', 'is', 'this' ]);
     });
 
-    it('splits whitespace with -w', () => {
+    it('slurps up file -f', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/test-file.txt']);
 
       const result = slrp.stdout.toString().trim();
@@ -129,7 +131,7 @@ describe('slrp', () => {
       expect(result).toMatch("I am\ntest text.");
     });
 
-    it('slurps json into a parsed, usable, object', () => {
+    it('slurps json into a parsed, usable, object -j', () => {
       const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
         input: JSON.stringify({ someKey: "some value" }),
       });
@@ -137,6 +139,34 @@ describe('slrp', () => {
       const result = slrp.stdout.toString().trim();
 
       expect(result).toEqual("some value");
+    });
+
+    it('returns nothing if using silent flag without explicit printing -s', () => {
+      const slrp = spawnSync('./index.js', ['-s'], {
+        input: JSON.stringify({ someKey: "some value" }),
+      });
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual('');
+    });
+
+    it('only prints if user specifies when using silent flag -s', () => {
+      const slrp = spawnSync('./index.js', ['() => console.log("custom print")']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual('custom print');
+    });
+
+    //TODO: test for exec silent and chaining
+
+    it('', () => {
+      const slrp = spawnSync('./index.js', ['() => console.log("custom print")']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual('custom print');
     });
   })
 
@@ -146,7 +176,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(JSON.parse(result)).toEqual([ 'I am', 'test text.' ]);
+      expect(parsedNoColor(result)).toEqual([ 'I am', 'test text.' ]);
     });
 
     it('splits whitespace with -w and slurps file', () => {
@@ -154,7 +184,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(JSON.parse(result)).toEqual([ 'I', 'am\ntest', 'text.' ]);
+      expect(parsedNoColor(result)).toEqual([ "I", "am\ntest", "text." ]);
     });
   });
 
