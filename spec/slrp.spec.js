@@ -169,8 +169,18 @@ describe('slrp', () => {
 
       expect(result).toEqual('custom print');
     });
+  })
 
-    //TODO: test for pretty print formatting
+  describe('pretty-print and colorize json', () => {
+    it('-j pretty prints json', () => {
+      const slrp = spawnSync('./index.js', ['-j'], {
+        input: JSON.stringify({ hello: 'world' })
+      });
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual(withColor(JSON.stringify({ hello: 'world' }, null, 2)));
+    });
   })
 
   describe('chaning funcs, flags, and files', () => {
