@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 const { withColor } = require('../with-color.js');
+const os = require('os');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
 
@@ -160,6 +161,7 @@ describe('slrp', () => {
     });
 
     //TODO: test for exec silent and chaining
+    //TODO: test for pretty print formatting
 
     it('', () => {
       const slrp = spawnSync('./index.js', ['() => console.log("custom print")']);
