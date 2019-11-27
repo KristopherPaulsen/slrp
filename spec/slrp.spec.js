@@ -171,18 +171,6 @@ describe('slrp', () => {
     });
   })
 
-  describe('pretty-print and colorize json', () => {
-    it('-j pretty prints json', () => {
-      const slrp = spawnSync('./index.js', ['-j'], {
-        input: JSON.stringify({ hello: 'world' })
-      });
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(result).toEqual(withColor(JSON.stringify({ hello: 'world' }, null, 2)));
-    });
-  })
-
   describe('chaning funcs, flags, and files', () => {
     it('-n, -f  splits newlines and slurps file', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
@@ -200,6 +188,18 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual([ "I", "am\ntest", "text." ]);
     });
   });
+
+  //describe('pretty-print and colorize json', () => {
+    //it('-j pretty prints json', () => {
+      //const slrp = spawnSync('./index.js', ['-j'], {
+        //input: JSON.stringify({ hello: 'world' })
+      //});
+
+      //const result = slrp.stdout.toString().trim();
+
+      //expect(result).toEqual(withColor(JSON.stringify({ hello: 'world' }, null, 2)));
+    //});
+  //})
 
   // weird inputs
   //  no stdin
