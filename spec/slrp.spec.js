@@ -108,7 +108,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(result).toMatch("[ 'what', 'is', 'this' ]");
+      expect(JSON.parse(result)).toEqual([ 'what', 'is', 'this' ]);
     });
 
     it('splits whitespace with -w', () => {
@@ -118,7 +118,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(result).toMatch("[ 'what', 'is', 'this' ]");
+      expect(JSON.parse(result)).toEqual(['what', 'is', 'this' ]);
     });
 
     it('splits whitespace with -w', () => {
@@ -136,7 +136,7 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(result).toMatch("some value");
+      expect(result).toEqual("some value");
     });
   })
 
@@ -146,10 +146,10 @@ describe('slrp', () => {
 
       const result = slrp.stdout.toString().trim();
 
-      expect(result).toMatch("[ 'I am', 'test text.' ]");
+      expect(JSON.parse(result)).toEqual([ 'I am', 'test text.' ]);
     });
 
-    fit('splits whitespace with -w and slurps file', () => {
+    it('splits whitespace with -w and slurps file', () => {
       const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/test-file.txt']);
 
       const result = slrp.stdout.toString().trim();
