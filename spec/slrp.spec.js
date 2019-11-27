@@ -51,7 +51,7 @@ describe('slrp', () => {
   });
 
 
-  describe('property assessory shorthad', () => {
+  describe('property assessor shorthand', () => {
     it('calls method off of data', () => {
       const slrp = spawnSync('./index.js', ['.length'], {
         input: 'hello',
@@ -153,23 +153,24 @@ describe('slrp', () => {
     });
 
     it('only prints if user specifies when using silent flag -s', () => {
-      const slrp = spawnSync('./index.js', ['() => console.log("custom print")']);
+      const slrp = spawnSync('./index.js',  ['-s', '() => console.log("custom print")'], {
+        input: 'unused',
+      });
 
       const result = slrp.stdout.toString().trim();
 
       expect(result).toEqual('custom print');
     });
 
-    //TODO: test for exec silent and chaining
+    it('executes single statement without stdin using -e', () => {
+      const slrp = spawnSync('./index.js', ['-e', '() => console.log("custom print")']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual('custom print');
+    });
+
     //TODO: test for pretty print formatting
-
-    it('', () => {
-      const slrp = spawnSync('./index.js', ['() => console.log("custom print")']);
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(result).toEqual('custom print');
-    });
   })
 
   describe('chaning funcs, flags, and files', () => {
