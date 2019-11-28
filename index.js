@@ -6,7 +6,7 @@ const path = require('path');
 const { assign } = Object;
 const { withColor } = require('./with-color.js')
 
-const main = async () => {
+const main = () => {
   const args = yargs
     .example(example())
     .option('newline', {
@@ -51,11 +51,14 @@ const main = async () => {
       type: 'string',
       describe: 'edit the file in-place',
       coerce: arg => {
-        if(typeof(arg) === 'string' && !arg.length) {
-          return true;
+        if(typeof(arg) === 'boolean') {
+          return { backupName: '' };
+        }
+        if(typeof(arg) === 'undefined') {
+          return { backupName: ''};
         }
 
-        return false;
+        return { backupName: arg }
       },
     })
     .argv;
@@ -85,9 +88,12 @@ const printFormatted = (args, result) => {
 
 const printToFile = (args, rawResult) => {
   const result = typeof(rawResult) === 'string' ? rawResult : JSON.stringify(rawResult);
-  const tempPath = path.resolve(args.file, args.inPlace);
 
-  if(args.inPlace.length) {
+  const tempPath = path.resolve(
+    args.file + args.inPlace.backupName
+  );
+
+  if(args.inPlace.backupName) {
     writeFileSync(tempPath, result, 'utf8');
     writeFileSync(args.file, result);
     unlinkSync(tempPath);
