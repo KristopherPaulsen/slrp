@@ -4,7 +4,8 @@
   "description": "Making node one-liners great again",
   "main": "./index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:int": "docker build . -t dockerized-slrp && docker run -it dockerized-slrp"
   },
   "keywords": [
     "cli"
