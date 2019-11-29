@@ -5,6 +5,7 @@ const { withColor } = require('../with-color.js');
 const os = require('os');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
+
 const testFile = {
   name: path.resolve('test-file.text'),
   backupName: path.resolve(`test-file.text.bak`),
@@ -141,6 +142,14 @@ describe('slrp', () => {
       const result = slrp.stdout.toString().trim();
 
       expect(result).toMatch("I am\ntest text.");
+    });
+
+    it('-f  slurps up file and auto-parses it if .json', () => {
+      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-suffix-check.json', '.hello']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toMatch("world");
     });
 
     it('-j  slurps json into a parsed, usable, object', () => {
