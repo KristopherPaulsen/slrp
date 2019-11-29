@@ -35,7 +35,7 @@ echo "Hello, World" | slrp 'x => x.split(" ")' 'x => x.map(word => word.length)'
 ]
 ```
 
-You can also use the property assessor shorthand for easier manipulation
+You can also use the property assessor shorthand for easier manipulation.
 
 ```bash
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
@@ -43,7 +43,7 @@ echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 # 6
 ```
 
-Manipulate the stdin as a string
+Manipulate the stdin as a string.
 
 ```bash
 echo "Hello, World" | slrp 'x => x.replace(/o/gi, "0")'
@@ -61,7 +61,7 @@ echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
 
 ## Flags
 
-slrp provides multiple flags for easier one-liners
+slrp provides multiple flags for easier one-liners.
 
 `-j`
 
@@ -124,12 +124,12 @@ slurp file path and use as stdin
 `-s`
 
 Silence, or suppress automatic printing of result. Useful for side-effect one-liners,
-or controlling printing yourself
+or controlling printing yourself.
 
 ```bash
-echo "Just me" | slrp -s 'x => console.log(x)'
+echo "I will print it MY way" | slrp -s 'x => console.log(x)'
 
-# Just me!
+# I will print it MY way!
 ```
 
 `-e`
@@ -149,22 +149,22 @@ In place editing of files. Can also create a backup file by suppling an argument
 
 
 ```bash
-slrp -i .bak -f test-file.txt '() => "I'll be added to the file" '
+slrp -i .bak -f test-file.txt '() => "I will be added to the file" '
 
 # inside test-file
 
-  "I'll be added to the file"
+  "I will be added to the file"
 
 # inside test-file.txt.bak
 
   // whatever text was originally in the file
 
 
-slrp -i -f test-file.txt '() => "I'll be added to the file without a backup" '
+slrp -i -f test-file.txt '() => "I will be added to the file without a backup" '
 
 # inside test-file
 
-  "I'll be added to the file without a backup"
+  "I will be added to the file without a backup"
 
 # No stdin!
 ```
