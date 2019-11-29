@@ -69,6 +69,31 @@ const main = () => {
   printFormatted(args, result);
 }
 
+
+const requireGlobalFunctions = () => {
+  try {
+    const { globalFunctions } = require(path.join(os.homedir(), '.config', 'slrp'));
+    assign(global, globalFunctions);
+  } catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') {
+      throw err
+    }
+  }
+}
+
+const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+  const isMethodCall = /^\.$/;
+  const isPropertyAccess = /^\[|^\.\w/;
+
+  if(typeof(func) === 'string') {
+    if(func.match(isMethodCall)) return result;
+    if(func.match(isPropertyAccess)) return eval(`result${func}`);
+  }
+
+  return eval(func)(result);
+
+}, stdin);
+
 const printFormatted = (args, result) => {
   if(args.inPlace) {
     return printToFile(args, result);
@@ -94,29 +119,6 @@ const printToFile = (args, rawResult) => {
     writeFileSync(args.file, result);
   } else {
     writeFileSync(args.file, result, 'utf8');
-  }
-}
-
-const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
-  if(typeof(func) === 'string' && func.match(/^\.$/)) {
-    return result;
-  }
-  if(typeof(func) === 'string' && func.match(/^\[|^\.\w/)) {
-    return eval(`result${func}`);
-  }
-
-  return eval(func)(result);
-
-}, stdin);
-
-const requireGlobalFunctions = () => {
-  try {
-    const { globalFunctions } = require(path.join(os.homedir(), '.config', 'slrp'));
-    assign(global, globalFunctions);
-  } catch (err) {
-    if (err.code !== 'MODULE_NOT_FOUND') {
-      throw err
-    }
   }
 }
 
