@@ -5,13 +5,16 @@ const { withColor } = require('../with-color.js');
 const os = require('os');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
-const testFileName = path.resolve('spec/test-file.txt');
-const testBackupFile = path.resolve('spec/test-file.txt.bak');
+const testFile = {
+  name: path.resolve('test-file.text'),
+  backupName: path.resolve(`test-file.text.bak`),
+  backupSuffix: '.bak',
+}
 
 const testCleanup= () => {
   try {
-    fs.unlinkSync(testFileName);
-    fs.unlinkSync(testBackupFile);
+    fs.unlinkSync(testFile.name);
+    fs.unlinkSync(testFile.backupName);
   } catch (error){};
 };
 
@@ -151,7 +154,7 @@ describe('slrp', () => {
     });
 
     it('-s  returns nothing if using silent flag without explicit printing', () => {
-      const slrp = spawnSync('./index.js', ['-s'], {
+      const slrp = spawnSync('./index.js', ['-s', '(stdin) => stdin'], {
         input: JSON.stringify({ someKey: "some value" }),
       });
 
@@ -183,20 +186,20 @@ describe('slrp', () => {
   describe('-i  editting a file in-place', () => {
     beforeAll(() => {
       testCleanup();
-      fs.openSync(testFileName, 'w');
+      fs.openSync(testFile.name, 'w');
     });
 
     afterAll(testCleanup);
 
     it('adds text to file', () => {
-      fs.openSync(testFileName, 'w');
+      fs.openSync(testFile.name, 'w');
 
       spawnSync(
         './index.js',
-        ['-i', '-f', testFileName, '() => "added text"']
+        ['-i', '-f', testFile.name, '() => "added text"']
       );
 
-      const result = fs.readFileSync(testFileName, 'utf8');
+      const result = fs.readFileSync(testFile.name, 'utf8');
 
       expect(result).toEqual('added text');
     });
@@ -204,13 +207,13 @@ describe('slrp', () => {
     it('edits in-place, with backup file', () => {
       spawnSync(
         './index.js',
-        ['-i', '.bak', '-f', testFileName, '() => "original text" ']
+        ['-i', testFile.backupSuffix, '-f', testFile.name, '() => "original text" ']
       );
 
-      fs.writeFileSync(testFileName, 'changed text');
+      fs.writeFileSync(testFile.name, 'changed text');
 
-      const result = fs.readFileSync(testFileName, 'utf8');
-      const backupResult = fs.readFileSync(testBackupFile, 'utf8');
+      const result = fs.readFileSync(testFile.name, 'utf8');
+      const backupResult = fs.readFileSync(testFile.backupName, 'utf8');
 
       expect(backupResult).toEqual('original text');
       expect(result).toEqual('changed text');
