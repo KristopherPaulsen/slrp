@@ -13,7 +13,13 @@ npm install -g @kcpaulsen/slrp
 ```bash
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
-# 6
+curl pants.rip/echo | slrp -j .reqHeaders.host
+
+slrp -f file-here.txt 'str => str.replace("a", "b")'
+
+ls | slrp -n .length
+
+echo "Hello World" | slrp -w [0]
 ```
 
 ## Chaining Functions
