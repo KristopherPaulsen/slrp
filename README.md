@@ -60,6 +60,7 @@ slrp provides multiple flags for easier one-liners
 `-j`
 
 slurp stdin string into parsed object.
+(See property assessor shorthand for easy access and manipulation)
 
 ```bash
   curl pants.rip/echo | slrp -j .
@@ -132,6 +133,32 @@ Execute sequence of commands without stdin. Usefull for side-effect one-liners
 
 ```bash
 slrp -e '() => console.log("No stdin!")'
+
+# No stdin!
+```
+
+`-i`
+
+In place editing of files. Can also create a backup file by suppling an argument to `-i`.
+
+
+```bash
+slrp -i .bak -f test-file.txt '() => "I'll be added to the file" '
+
+# inside test-file
+
+  "I'll be added to the file"
+
+# inside test-file.txt.bak
+
+  // whatever text was originally in the file
+
+
+slrp -i -f test-file.txt '() => "I'll be added to the file without a backup" '
+
+# inside test-file
+
+  "I'll be added to the file without a backup"
 
 # No stdin!
 ```
