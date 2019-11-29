@@ -82,13 +82,11 @@ const requireGlobalFunctions = () => {
 }
 
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
-  const isMethodCall = /^\.$/;
+  const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
 
-  if(typeof(func) === 'string') {
-    if(func.match(isMethodCall)) return result;
-    if(func.match(isPropertyAccess)) return eval(`result${func}`);
-  }
+  if(func.match(isIdentityFunc)) return result;
+  if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
   return eval(func)(result);
 
