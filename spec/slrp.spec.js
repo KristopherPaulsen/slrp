@@ -1,13 +1,21 @@
 const fs = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
+const { openSync, spawnSync } = require('child_process');
 const { withColor } = require('../with-color.js');
 const os = require('os');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
+const testFileName = path.resolve('spec/test-file.txt');
+const testBackupFile = path.resolve('spec/test-file.txt.bak');
+
+const testCleanup= () => {
+  try {
+    fs.unlinkSync(testFileName);
+    fs.unlinkSync(testBackupFile);
+  } catch (error){};
+};
 
 describe('slrp', () => {
-
   describe('chaining functions', () => {
     it('passes stdin to string function', () => {
       const slrp = spawnSync('./index.js', ['x => x.length'], {
@@ -168,6 +176,44 @@ describe('slrp', () => {
       const result = slrp.stdout.toString().trim();
 
       expect(result).toEqual('custom print');
+    });
+
+  })
+
+  describe('-i  editting a file in-place', () => {
+    beforeAll(() => {
+      testCleanup();
+      fs.openSync(testFileName, 'w');
+    });
+
+    afterAll(testCleanup);
+
+    it('adds text to file', () => {
+      fs.openSync(testFileName, 'w');
+
+      spawnSync(
+        './index.js',
+        ['-i', '-f', testFileName, '() => "added text"']
+      );
+
+      const result = fs.readFileSync(testFileName, 'utf8');
+
+      expect(result).toEqual('added text');
+    });
+
+    it('edits in-place, with backup file', () => {
+      spawnSync(
+        './index.js',
+        ['-i', '.bak', '-f', testFileName, '() => "original text" ']
+      );
+
+      fs.writeFileSync(testFileName, 'changed text');
+
+      const result = fs.readFileSync(testFileName, 'utf8');
+      const backupResult = fs.readFileSync(testBackupFile, 'utf8');
+
+      expect(backupResult).toEqual('original text');
+      expect(result).toEqual('changed text');
     });
   })
 

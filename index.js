@@ -51,10 +51,9 @@ const main = () => {
       type: 'string',
       describe: 'edit the file in-place',
       coerce: arg => {
-        if(typeof(arg).match(/boolean|undefined/gi)) {
+        if((typeof(arg)).match(/boolean|null|undefined/gi)) {
           return { backupName: '' };
         }
-
         return { backupName: arg }
       },
     })
@@ -93,7 +92,6 @@ const printToFile = (args, rawResult) => {
   if(args.inPlace.backupName) {
     writeFileSync(tempPath, result, 'utf8');
     writeFileSync(args.file, result);
-    unlinkSync(tempPath);
   } else {
     writeFileSync(args.file, result, 'utf8');
   }
