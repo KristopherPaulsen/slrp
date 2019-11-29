@@ -5,7 +5,7 @@
   "main": "./index.js",
   "scripts": {
     "test": "jest",
-    "test:int": "docker build . -t dockerized-slrp && docker run -it dockerized-slrp"
+    "test:int": "./scripts/run-dockerized-slrp-tests.sh"
   },
   "keywords": [
     "cli"
