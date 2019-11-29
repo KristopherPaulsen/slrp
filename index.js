@@ -31,7 +31,8 @@ const main = () => {
       alias: 'f',
       type: 'string',
       describe: 'path to file to use as stdin',
-      coerce: path.resolve,
+      default: '',
+      coerce: arg => arg ? path.resolve(arg) : '',
     })
     .option('silent', {
       alias: 's',
@@ -123,7 +124,7 @@ const printToFile = (args, rawResult) => {
 const getStdin = args => {
   const rawStdin = args.exec ? '' : readFileSync(args.file || 0, 'utf8');
 
-  if(args.json || args.file && args.file.match(/\.json$/)) {
+  if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(rawStdin);
   }
 
