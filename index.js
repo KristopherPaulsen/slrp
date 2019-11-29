@@ -51,11 +51,8 @@ const main = () => {
       type: 'string',
       describe: 'edit the file in-place',
       coerce: arg => {
-        if(typeof(arg) === 'boolean') {
+        if(typeof(arg).match(/boolean|undefined/gi)) {
           return { backupName: '' };
-        }
-        if(typeof(arg) === 'undefined') {
-          return { backupName: ''};
         }
 
         return { backupName: arg }
