@@ -123,7 +123,7 @@ const printToFile = (args, rawResult) => {
 const getStdin = args => {
   const rawStdin = args.exec ? '' : readFileSync(args.file || 0, 'utf8');
 
-  if(args.json) {
+  if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(rawStdin);
   }
 
