@@ -11,16 +11,20 @@ npm install -g @kcpaulsen/slrp
 ```
 
 ```bash
+
+echo -e "Hello\nWorld" | slrp -n .length
+
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
-curl pants.rip/echo | slrp -j .reqHeaders.host
+echo "Hello World" | slrp -w .length
 
-slrp -f file-here.txt 'str => str.replace("a", "b")'
+curl pants.rip/echo | slrp -j .reqHeaders.host .length
 
-ls | slrp -n .length
+slrp -i -f /path/to/file.json 'json => ({ ...json, newKey: "value" })'
 
-echo "Hello World" | slrp -w [0]
+slrp -i -f /path/to/file.txt 'text => text.replace("a", "b")'
 ```
+
 
 ## Chaining Functions
 
