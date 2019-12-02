@@ -107,7 +107,9 @@ const printFormatted = (args, result) => {
 }
 
 const printToFile = (args, rawResult) => {
-  const result = typeof(rawResult) === 'string' ? rawResult : JSON.stringify(rawResult, null, 2);
+  const result = typeof(rawResult) === 'string'
+    ? rawResult
+    : JSON.stringify(rawResult, null, '  ');
 
   const tempPath = path.resolve(
     args.file + args.inPlace.backupName
