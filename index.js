@@ -85,8 +85,12 @@ const requireGlobalFunctions = () => {
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
+  const isThisPropertyAccess = /^this(\.|\[)/;
+  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
 
   if(func.match(isIdentityFunc)) return result;
+  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result); // forgive me, for I have sinned
+  if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
   if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
   return eval(func)(result);
