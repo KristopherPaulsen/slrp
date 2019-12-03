@@ -59,7 +59,7 @@ echo "Get that length" | slrp .length
 or
 
 ```bash
-echo "Hello" | slrp "split("\w")" this.length
+echo "Hello" | slrp 'split("\w")' this.length
 ```
 
 ## Flags
