@@ -60,12 +60,8 @@ describe('slrp', () => {
 
       expect(result).toMatch('10');
     })
-  });
 
-  describe('"this"  assessor shorthand', () => {
-    // check this method call
-
-    it('can access properties using "this" ', () => {
+    it('this  can access properties', () => {
       const slrp = spawnSync('./index.js', ['-n', 'this[0].length'], {
         input: 'hello\nworld'
       });
@@ -75,7 +71,7 @@ describe('slrp', () => {
       expect(result).toMatch('5');
     });
 
-    it('can spread properties using "this" ', () => {
+    it('this  can spread properties using', () => {
       const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "newValue" }'], {
         input: '{ "key": "value" }',
       });
@@ -85,7 +81,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual({ key: "value", added: "newValue" });
     });
 
-    it('can spread properties using "this" and use method calls ', () => {
+    it('this  can spread properties and use method calls ', () => {
       const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: this.key }'], {
         input: '{ "key": "value" }',
       });
@@ -95,7 +91,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual({ key: "value", added: "value" });
     });
 
-    it(`doesn't do some tricky dicky regex replace, actually evaulates "this" `, () => {
+    it(`this  doesn't do some tricky dicky regex replace`, () => {
       const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "this.key" }'], {
         input: '{ "key": "value" }',
       });
