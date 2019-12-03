@@ -1,7 +1,6 @@
 # slrp
 
 > Make the node command line great again
-
 </br>
 
 ## Getting Started
@@ -11,16 +10,19 @@ npm install -g @kcpaulsen/slrp
 ```
 
 ```bash
-
 echo -e "Hello\nWorld" | slrp -n .length
 
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
 echo "Hello World" | slrp -w .length
 
+echo "Hello World" | slrp -w this.length
+
 curl pants.rip/echo | slrp -j .reqHeaders.host .length
 
 slrp -i -f /path/to/file.json 'json => ({ ...json, newKey: "value" })'
+
+slrp -i -f /path/to/file.json '{ ...this, newKey: "value" }'
 
 slrp -i -f /path/to/file.txt 'text => text.replace("a", "b")'
 ```
@@ -39,13 +41,25 @@ echo "Hello, World" | slrp 'x => x.split(" ")' 'x => x.map(word => word.length)'
 ]
 ```
 
+## Property Assessor Shorthand
+
 You can also use the property assessor shorthand for easier manipulation.
+You can use "this", "[]" or "." for easier access
 
 ```bash
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
 
-# 6
+or
+
+echo "Get that length" | slrp .length
+
+or
+
+echo "Hello" | slrp "split("\w")" this.length
+
 ```
+
+## STDIN sources
 
 Manipulate the stdin as a string.
 
@@ -55,13 +69,6 @@ echo "Hello, World" | slrp 'x => x.replace(/o/gi, "0")'
 # Hell0, W0rld
 ```
 
-Use Custom functions (like lodash/fp) for easier commands (See Custom Functions)
-
-```bash
-echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
-
-# 11
-```
 
 ## Flags
 
@@ -187,6 +194,16 @@ module.exports = {
   }
 }
 ```
+
+Use Custom functions (like lodash/fp) for elegant functional composition,
+right from the command line!
+
+```bash
+echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
+
+# 11
+```
+
 
 ## About
 
