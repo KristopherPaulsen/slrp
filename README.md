@@ -48,27 +48,19 @@ You can use "this", "[]" or "." for easier access
 
 ```bash
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
-
-or
-
-echo "Get that length" | slrp .length
-
-or
-
-echo "Hello" | slrp "split("\w")" this.length
-
 ```
 
-## STDIN sources
-
-Manipulate the stdin as a string.
+or
 
 ```bash
-echo "Hello, World" | slrp 'x => x.replace(/o/gi, "0")'
-
-# Hell0, W0rld
+echo "Get that length" | slrp .length
 ```
 
+or
+
+```bash
+echo "Hello" | slrp "split("\w")" this.length
+```
 
 ## Flags
 
