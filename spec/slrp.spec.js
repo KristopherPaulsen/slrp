@@ -62,6 +62,50 @@ describe('slrp', () => {
     })
   });
 
+  describe('"this"  assessor shorthand', () => {
+    // check this method call
+
+    it('can access properties using "this" ', () => {
+      const slrp = spawnSync('./index.js', ['-n', 'this[0].length'], {
+        input: 'hello\nworld'
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(result).toMatch('5');
+    });
+
+    it('can spread properties using "this" ', () => {
+      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "newValue" }'], {
+        input: '{ "key": "value" }',
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(parsedNoColor(result)).toEqual({ key: "value", added: "newValue" });
+    });
+
+    it('can spread properties using "this" and use method calls ', () => {
+      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: this.key }'], {
+        input: '{ "key": "value" }',
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(parsedNoColor(result)).toEqual({ key: "value", added: "value" });
+    });
+
+    it(`doesn't do some tricky dicky regex replace, actually evaulates "this" `, () => {
+      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "this.key" }'], {
+        input: '{ "key": "value" }',
+      });
+
+      const result = slrp.stdout.toString();
+
+      expect(parsedNoColor(result)).toEqual({ key: "value", added: "this.key" });
+    });
+  })
+
 
   describe('property assessor shorthand', () => {
     it('calls method off of data', () => {
