@@ -47,6 +47,11 @@ const main = () => {
       describe: 'Run in execute mode, no longer using stdin. Runs in silent by default (see -s)',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('add-tab-completion', {
+      alias: 'e',
+      type: 'boolean',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .option('in-place', {
       alias: 'i',
       type: 'string',
@@ -59,6 +64,10 @@ const main = () => {
       },
     })
     .argv;
+
+  if(args.addTabCompletion) {
+    console.log(path.resolve(__dirname, 'slrp-completions.sh'));
+  }
 
   requireGlobalFunctions();
 
