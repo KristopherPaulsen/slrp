@@ -119,7 +119,7 @@ const updateBashCompletion = () => {
   console.log(
     '\n' +
     chalk`{green Success!}: Add the following to your {bold .bashrc} or {bold .bash_profile}\n\n` +
-    chalk`{italic source /home/kc/.config/slrp/slrp-bash-completion.sh}`
+    chalk`{italic source $HOME/.config/slrp/slrp-bash-completion.sh}`
   )
 }
 
