@@ -5,6 +5,10 @@ const os = require('os');
 const path = require('path');
 const { assign } = Object;
 const { withColor } = require('./with-color.js')
+const { keys } = Object;
+const chalk = require("chalk");
+
+const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 
 const main = () => {
   const args = yargs
@@ -63,7 +67,17 @@ const main = () => {
         return { backupName: arg }
       },
     })
+    .option('update-bash-completion', {
+      alias: 'i',
+      type: 'string',
+      describe: 'add bash completion file to unixish systems',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .argv;
+
+  if(args.updateBashCompletion) {
+    return updateBashCompletion();
+  }
 
   requireGlobalFunctions();
 
@@ -75,10 +89,52 @@ const main = () => {
   printFormatted(args, result);
 }
 
+const updateBashCompletion = () => {
+
+  const pathToCompletions = path.join(CONFIG_PATH, 'slrp-bash-completion.sh');
+
+  const completions = [
+    '-i',
+    '-e',
+    '-e',
+    '-s',
+    '-n',
+    '-w',
+    '-f',
+    '-j',
+    '--in-place',
+    '--silent',
+    '--exec',
+    '--newline',
+    '--white-space',
+    '--json',
+    '--file',
+    '--update-bash-completion',
+    ...keys(require(CONFIG_PATH).globalFunctions),
+  ]
+
+  const text = '#/usr/bin/env bash\n\n' +
+               `complete -W "${completions.join(" ")}" slrp`;
+
+  writeFileSync(
+    pathToCompletions,
+    text,
+    'utf8'
+  );
+
+  const helpText = chalk`
+    {green Success!}: Add to your {bold .bashrc} or {bold .bash_profile}\n
+    {italic source /home/kc/.config/slrp/slrp-bash-completion.sh}
+  `.split("\n")
+    .map(str => str.trim())
+    .join("\n");
+
+  console.log(helpText);
+}
 
 const requireGlobalFunctions = () => {
   try {
-    const { globalFunctions } = require(path.join(os.homedir(), '.config', 'slrp'));
+    const { globalFunctions } = require(CONFIG_PATH);
     assign(global, globalFunctions);
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
