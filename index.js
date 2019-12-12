@@ -68,7 +68,6 @@ const main = () => {
       },
     })
     .option('update-bash-completion', {
-      alias: 'i',
       type: 'string',
       describe: 'add bash completion file to unixish systems',
       coerce: arg => typeof(arg) !== undefined,
