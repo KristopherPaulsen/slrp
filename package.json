@@ -1,6 +1,6 @@
 {
   "name": "@kcpaulsen/slrp",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Making node one-liners great again",
   "main": "./index.js",
   "scripts": {
@@ -23,8 +23,9 @@
     "jest": "^24.9.0"
   },
   "dependencies": {
-    "json-colorizer": "^2.2.1",
     "chalk": "^3.0.0",
-    "indent-string": "^4.0.0"
+    "indent-string": "^4.0.0",
+    "json-colorizer": "^2.2.1",
+    "yargs": "^15.0.2"
   }
 }
