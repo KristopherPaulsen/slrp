@@ -65,10 +65,6 @@ const main = () => {
     })
     .argv;
 
-  if(args.addTabCompletion) {
-    console.log(path.resolve(__dirname, 'slrp-completions.sh'));
-  }
-
   requireGlobalFunctions();
 
   const result = runStringFuncs({
