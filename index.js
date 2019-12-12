@@ -122,14 +122,11 @@ const updateBashCompletion = () => {
     'utf8'
   );
 
-  const helpText = chalk`
-    {green Success!}: Add to your {bold .bashrc} or {bold .bash_profile}\n
-    {italic source /home/kc/.config/slrp/slrp-bash-completion.sh}
-  `.split("\n")
-    .map(str => str.trim())
-    .join("\n");
-
-  console.log(helpText);
+  console.log(
+    '\n' +
+    chalk`{green Success!}: Add the following to your {bold .bashrc} or {bold .bash_profile}\n\n` +
+    chalk`{italic source /home/kc/.config/slrp/slrp-bash-completion.sh}`
+  )
 }
 
 const requireGlobalFunctions = () => {
