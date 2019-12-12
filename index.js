@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const yargs = require('yargs');
-const { writeFileSync, readFileSync, unlinkSync } = require('fs');
+const { writeFileSync, readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
 const { assign } = Object;
