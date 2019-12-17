@@ -7,6 +7,7 @@ const { assign } = Object;
 const { withColor } = require('./with-color.js')
 const { keys } = Object;
 const chalk = require("chalk");
+const { completionTemplate } = require('./bash-completion-template.js');
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 
@@ -107,12 +108,9 @@ const updateBashCompletion = () => {
     ...keys(require(CONFIG_PATH).globalFunctions),
   ]
 
-  const text = '#/usr/bin/env bash\n\n' +
-               `complete -W "${completions.join(" ")}" slrp`;
-
   writeFileSync(
     pathToCompletions,
-    text,
+    completionTemplate(completions),
     'utf8'
   );
 
