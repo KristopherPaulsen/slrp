@@ -1,12 +1,8 @@
 {
   "name": "@kcpaulsen/slrp",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Making node one-liners great again",
   "main": "./index.js",
-  "files": [
-    "/lib",
-    "./index.js"
-  ],
   "scripts": {
     "test": "jest --colors",
     "test:int": "./scripts/run-dockerized-slrp-tests.sh"
