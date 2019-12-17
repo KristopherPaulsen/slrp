@@ -3,11 +3,11 @@ const yargs = require('yargs');
 const { writeFileSync, readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
-const { assign } = Object;
-const { withColor } = require('./with-color.js')
 const { keys } = Object;
 const chalk = require("chalk");
-const { completionTemplate } = require('./bash-completion-template.js');
+const { completionTemplate } = require('./lib/bash-completion-template.js');
+const { withColor } = require('./lib/with-color.js')
+const { assign } = Object;
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 

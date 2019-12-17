@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { openSync, spawnSync } = require('child_process');
-const { withColor } = require('../with-color.js');
+const { withColor } = require('../lib/with-color.js');
 const os = require('os');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
