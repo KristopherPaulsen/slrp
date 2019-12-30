@@ -106,7 +106,7 @@ const updateBashCompletion = () => {
     '--file',
     '--update-bash-completion',
     ...keys(require(CONFIG_PATH).globalFunctions),
-  ]
+  ];
 
   writeFileSync(
     pathToCompletions,
@@ -182,6 +182,10 @@ const getStdin = args => {
 
   if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(rawStdin);
+  }
+
+  if(args.file.match(/\.js$/)) {
+    return require(path.resolve(args.file));
   }
 
   if(args.newline) {
