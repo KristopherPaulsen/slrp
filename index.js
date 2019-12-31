@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require = require("esm")(module);
 const yargs = require('yargs');
 const { writeFileSync, readFileSync } = require('fs');
 const os = require('os');
