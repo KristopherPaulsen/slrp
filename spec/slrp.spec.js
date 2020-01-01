@@ -192,6 +192,14 @@ describe('slrp', () => {
       expect(result).toMatch("world");
     });
 
+    fit('-f  slurps up file and auto-parses it if .js', () => {
+      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-node-exports.js', '.hello']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toMatch("world");
+    });
+
     it('-j  slurps json into a parsed, usable, object', () => {
       const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
         input: JSON.stringify({ someKey: "some value" }),
