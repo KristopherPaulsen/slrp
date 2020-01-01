@@ -78,14 +78,14 @@ const main = () => {
   }
 
   if(args.exec || args.file) {
-    const stdin = args.exec ? '' : readFileSync(args.file);
-    return normalizeAndPrint(args, stdin);
+    const stdin = args.exec || readFileSync(args.file);
+    return runAndPrint(args, stdin);
   }
 
-  process.stdin.on('data', stdin => normalizeAndPrint(args, stdin));
+  process.stdin.on('data', stdin => runAndPrint(args, stdin));
 }
 
-const normalizeAndPrint = (args, stdin) => {
+const runAndPrint = (args, stdin) => {
   const result = runStringFuncs({
     stdin: normalizeStdin(stdin.toString(), args),
     funcs: args._,
