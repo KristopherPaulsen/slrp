@@ -4,15 +4,17 @@ const yargs = require('yargs');
 const { writeFileSync, readFileSync } = require('fs');
 const os = require('os');
 const path = require('path');
-const { keys } = Object;
 const chalk = require("chalk");
 const { completionTemplate } = require('./lib/bash-completion-template.js');
 const { withColor } = require('./lib/with-color.js')
-const { assign } = Object;
+const { keys, assign } = Object;
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 
 const main = () => {
+  requireGlobalFunctions();
+  process.stdin.setEncoding('utf8');
+
   const args = yargs
     .example(example())
     .option('newline', {
@@ -75,14 +77,51 @@ const main = () => {
     return updateBashCompletion();
   }
 
-  requireGlobalFunctions();
+  if(args.exec || args.file) {
+    const stdin = args.exec || readFileSync(args.file);
+    normalizeAndPrint(args, stdin);
+  }
 
+  process.stdin.on('data', stdin => normalizeAndPrint(args, stdin));
+}
+
+const normalizeAndPrint = (args, stdin) => {
   const result = runStringFuncs({
-    stdin: getStdin(args),
+    stdin: normalizeStdin(stdin.toString(), args),
     funcs: args._,
   });
 
-  printFormatted(args, result);
+  if(args.inPlace) {
+    return printToFile(args, result);
+  }
+  if(args.silent || args.exec || result === undefined) {
+    return;
+  }
+  if((typeof result).match(/array|object/i)) {
+    return console.log(withColor(JSON.stringify(result, null, 2)));
+  }
+
+  console.log(result);
+}
+
+const normalizeStdin = (stdin, args) => {
+  if(args.json || args.file.match(/\.json$/)) {
+    return JSON.parse(stdin);
+  }
+
+  if(args.file.match(/\.js$/)) {
+    return require(path.resolve(args.file));
+  }
+
+  if(args.newline) {
+    return stdin.trim().split("\n");
+  }
+
+  if(args['white-space']) {
+    return stdin.trim().split(" ");
+  }
+
+  return stdin.trim();
 }
 
 const updateBashCompletion = () => {
@@ -133,34 +172,6 @@ const requireGlobalFunctions = () => {
   }
 }
 
-const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
-  const isIdentityFunc = /^\.$/;
-  const isPropertyAccess = /^\[|^\.\w/;
-  const isThisPropertyAccess = /^this(\.|\[)/;
-  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
-
-  if(func.match(isIdentityFunc)) return result;
-  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result); // forgive me, for I have sinned
-  if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
-  if(func.match(isPropertyAccess)) return eval(`result${func}`);
-
-  return eval(func)(result);
-
-}, stdin);
-
-const printFormatted = (args, result) => {
-  if(args.inPlace) {
-    return printToFile(args, result);
-  }
-  if(args.silent || args.exec || result === undefined) {
-    return;
-  }
-  if((typeof result).match(/array|object/i)) {
-    return console.log(withColor(JSON.stringify(result, null, 2)));
-  }
-  console.log(result);
-}
-
 const printToFile = (args, rawResult) => {
   const result = typeof(rawResult) === 'string'
     ? rawResult
@@ -178,27 +189,21 @@ const printToFile = (args, rawResult) => {
   }
 }
 
-const getStdin = args => {
-  const rawStdin = args.exec ? '' : readFileSync(args.file || 0, 'utf8');
 
-  if(args.json || args.file.match(/\.json$/)) {
-    return JSON.parse(rawStdin);
-  }
+const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+  const isIdentityFunc = /^\.$/;
+  const isPropertyAccess = /^\[|^\.\w/;
+  const isThisPropertyAccess = /^this(\.|\[)/;
+  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
 
-  if(args.file.match(/\.js$/)) {
-    return require(path.resolve(args.file));
-  }
+  if(func.match(isIdentityFunc)) return result;
+  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result); // forgive me, for I have sinned
+  if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
+  if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
-  if(args.newline) {
-    return rawStdin.trim().split("\n");
-  }
+  return eval(func)(result);
 
-  if(args['white-space']) {
-    return rawStdin.trim().split(" ");
-  }
-
-  return rawStdin.trim();
-}
+}, stdin);
 
 const example = () => `
   echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
