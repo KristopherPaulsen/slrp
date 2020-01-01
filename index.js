@@ -78,8 +78,8 @@ const main = () => {
   }
 
   if(args.exec || args.file) {
-    const stdin = args.exec || readFileSync(args.file);
-    normalizeAndPrint(args, stdin);
+    const stdin = args.exec ? '' : readFileSync(args.file);
+    return normalizeAndPrint(args, stdin);
   }
 
   process.stdin.on('data', stdin => normalizeAndPrint(args, stdin));
