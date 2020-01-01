@@ -88,7 +88,7 @@ const runAndPrint = (args, rawStdin) => {
   const stdin = rawStdin || args.exec || readFileSync(args.file);
 
   const result = runStringFuncs({
-    stdin: formatStdin(stdin, args),
+    stdin: formatStdin(args, stdin),
     funcs: args._,
   });
 
@@ -105,7 +105,7 @@ const runAndPrint = (args, rawStdin) => {
   console.log(result);
 }
 
-const formatStdin = (stdin, args) => {
+const formatStdin = (args, stdin) => {
   stdin = stdin.toString().trim();
 
   if(args.json || args.file.match(/\.json$/)) {
