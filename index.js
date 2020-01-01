@@ -78,16 +78,17 @@ const main = () => {
   }
 
   if(args.exec || args.file) {
-    const stdin = args.exec || readFileSync(args.file);
-    return runAndPrint(args, stdin);
+    return runAndPrint(args);
   }
 
   process.stdin.on('data', stdin => runAndPrint(args, stdin));
 }
 
-const runAndPrint = (args, stdin) => {
+const runAndPrint = (args, rawStdin) => {
+  const stdin = rawStdin || args.exec || readFileSync(args.file);
+
   const result = runStringFuncs({
-    stdin: normalizeStdin(stdin.toString(), args),
+    stdin: formatStdin(stdin, args),
     funcs: args._,
   });
 
@@ -104,7 +105,9 @@ const runAndPrint = (args, stdin) => {
   console.log(result);
 }
 
-const normalizeStdin = (stdin, args) => {
+const formatStdin = (stdin, args) => {
+  stdin = stdin.toString().trim();
+
   if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(stdin);
   }
@@ -114,14 +117,14 @@ const normalizeStdin = (stdin, args) => {
   }
 
   if(args.newline) {
-    return stdin.trim().split("\n");
+    return stdin.split("\n");
   }
 
   if(args['white-space']) {
-    return stdin.trim().split(" ");
+    return stdin.split(" ");
   }
 
-  return stdin.trim();
+  return stdin;
 }
 
 const updateBashCompletion = () => {
