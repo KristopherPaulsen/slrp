@@ -192,12 +192,20 @@ describe('slrp', () => {
       expect(result).toMatch("world");
     });
 
-    fit('-f  slurps up file and auto-parses it if .js', () => {
+    it('-f  slurps up file and auto-parses it if .js', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-node-exports.js', '.hello']);
 
       const result = slrp.stdout.toString().trim();
 
       expect(result).toMatch("world");
+    });
+
+    it('-f  slurps up file and auto-parses it if es6 .js', () => {
+      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-es6-exports.js', '.default.hello']);
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(result).toEqual('world');
     });
 
     it('-j  slurps json into a parsed, usable, object', () => {
