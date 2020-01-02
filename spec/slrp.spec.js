@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { openSync, spawnSync } = require('child_process');
+const { execSync, openSync, spawnSync } = require('child_process');
 const { withColor } = require('../lib/with-color.js');
 const os = require('os');
 
@@ -300,6 +300,18 @@ describe('slrp', () => {
       const result = slrp.stdout.toString().trim();
 
       expect(parsedNoColor(result)).toEqual([ "I", "am\ntest", "text." ]);
+    });
+  });
+
+  describe('multiple piping', () => {
+    const itDockerOnly = process.env.SLRP_DOCKER_TEST ? it : it.skip;
+
+    itDockerOnly('should test linux code only', () => {
+      const result = execSync(
+        `echo  "HELLO" | node ./index.js .length | node ./index.js 'x => x + x'`
+      ).toString().trim();
+
+      expect(result).toBe("55");
     });
   });
 
