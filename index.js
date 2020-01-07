@@ -8,10 +8,11 @@ const chalk = require("chalk");
 const { completionTemplate } = require('./lib/bash-completion-template.js');
 const { withColor } = require('./lib/with-color.js')
 const { keys, assign } = Object;
+const getStdin = require('get-stdin');
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 
-const main = () => {
+const main = async () => {
   requireGlobalFunctions();
   process.stdin.setEncoding('utf8');
 
@@ -81,7 +82,7 @@ const main = () => {
     return runAndPrint(args);
   }
 
-  process.stdin.on('data', stdin => runAndPrint(args, stdin));
+  runAndPrint(args, await getStdin());
 }
 
 const runAndPrint = (args, rawStdin) => {
