@@ -99,26 +99,33 @@ const getByFileType = (args) => {
 }
 
 const printByType = (args, rawResult) => {
-  const result = rawResult.trim();
+  const result = rawResult.toString().trim();
 
+  if(args.silent || args.exec || result === undefined) {
+    return;
+  }
+  if(args.json) {
+    return prettyPrint(JSON.parse(result));
+  }
   if(args.newline) {
-    return console.log(withColor(JSON.stringify(result.split("\n"), null, 2)));
+    return prettPrint(result.split("\n"));
   }
   if(args['white-space']) {
-    return console.log(withColor(JSON.stringify(result.split(" "), null, 2)));
+    return prettyPrint(result.split(" "));
   }
   if(args.inPlace) {
     return printToFile(args, result);
   }
-  if(args.silent || args.exec || result === undefined) {
-    return;
-  }
   if((typeof result).match(/array|object/i)) {
-    return console.log(withColor(JSON.stringify(result, null, 2)));
+    return prettyPrint(result);
   }
 
   console.log(result);
 }
+
+const prettyPrint = (result) => console.log(
+  withColor(JSON.stringify(result, null, 2))
+);
 
 const runAndPrint = (args, rawStdin = '') => {
   const stdin = rawStdin.toString().trim()
