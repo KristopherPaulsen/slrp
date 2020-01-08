@@ -77,22 +77,36 @@ const main = async () => {
   if(args.updateBashCompletion) {
     return updateBashCompletion();
   }
-
-  if(args.exec || args.file) {
-    return runAndPrint(args);
+  else if(args.exec || args.file) {
+    try {
+      printByType(
+        args,
+        getByFileType(args.file),
+      );
+    } catch(error) {
+      printByType(args, readFileSync(args.file))
+    }
   }
-
-  runAndPrint(args, await getStdin());
+  else {
+    printByType(args, await getStdin());
+  }
 }
 
-const runAndPrint = (args, rawStdin) => {
-  const stdin = rawStdin || args.exec || readFileSync(args.file);
+const getByFileType = (args) => {
+  if(args.file.match(/\.js$|.json$/)) {
+    return require(path.resolve(args.file));
+  }
+}
 
-  const result = runStringFuncs({
-    stdin: formatStdin(args, stdin),
-    funcs: args._,
-  });
+const printByType = (args, rawResult) => {
+  const result = rawResult.trim();
 
+  if(args.newline) {
+    return console.log(withColor(JSON.stringify(result.split("\n"), null, 2)));
+  }
+  if(args['white-space']) {
+    return console.log(withColor(JSON.stringify(result.split(" "), null, 2)));
+  }
   if(args.inPlace) {
     return printToFile(args, result);
   }
@@ -106,24 +120,18 @@ const runAndPrint = (args, rawStdin) => {
   console.log(result);
 }
 
+const runAndPrint = (args, rawStdin = '') => {
+  const stdin = rawStdin.toString().trim()
+
+  const result = runStringFuncs({
+    stdin: formatStdin(args, stdin),
+    funcs: args._,
+  });
+
+  printByType(args, result);
+}
+
 const formatStdin = (args, stdin) => {
-  stdin = stdin.toString().trim();
-
-  if(args.json || args.file.match(/\.json$/)) {
-    return JSON.parse(stdin);
-  }
-
-  if(args.file.match(/\.js$/)) {
-    return require(path.resolve(args.file));
-  }
-
-  if(args.newline) {
-    return stdin.split("\n");
-  }
-
-  if(args['white-space']) {
-    return stdin.split(" ");
-  }
 
   return stdin;
 }
