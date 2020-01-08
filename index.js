@@ -81,14 +81,14 @@ const main = async () => {
     try {
       printByType(
         args,
-        getByFileType(args.file),
+        getByFileType(args),
       );
     } catch(error) {
       printByType(args, readFileSync(args.file))
     }
   }
   else {
-    printByType(args, await getStdin());
+    runAndPrint(args, await getStdin());
   }
 }
 
@@ -96,11 +96,10 @@ const getByFileType = (args) => {
   if(args.file.match(/\.js$|.json$/)) {
     return require(path.resolve(args.file));
   }
+  return readFileSync(args.file).toString();
 }
 
-const printByType = (args, rawResult) => {
-  const result = rawResult.toString().trim();
-
+const printByType = (args, result) => {
   if(args.silent || args.exec || result === undefined) {
     return;
   }
@@ -108,24 +107,36 @@ const printByType = (args, rawResult) => {
     return prettyPrint(JSON.parse(result));
   }
   if(args.newline) {
-    return prettPrint(result.split("\n"));
+    return prettyPrint(result);
   }
   if(args['white-space']) {
-    return prettyPrint(result.split(" "));
+    return prettyPrint(result);
   }
   if(args.inPlace) {
     return printToFile(args, result);
   }
-  if((typeof result).match(/array|object/i)) {
-    return prettyPrint(result);
-  }
 
-  console.log(result);
+  prettyPrint(result);
 }
 
-const prettyPrint = (result) => console.log(
-  withColor(JSON.stringify(result, null, 2))
-);
+const formatStdin = (args, rawStdin) => {
+  const stdin = rawStdin.toString().trim();
+
+  if(args.silent || args.exec || stdin === undefined) {
+    return;
+  }
+  if(args.json) {
+    return JSON.parse(stdin);
+  }
+  if(args.newline) {
+    return stdin.split("\n");
+  }
+  if(args['white-space']) {
+    return stdin.split(" ");
+  }
+
+  return stdin;
+}
 
 const runAndPrint = (args, rawStdin = '') => {
   const stdin = rawStdin.toString().trim()
@@ -136,11 +147,6 @@ const runAndPrint = (args, rawStdin = '') => {
   });
 
   printByType(args, result);
-}
-
-const formatStdin = (args, stdin) => {
-
-  return stdin;
 }
 
 const updateBashCompletion = () => {
@@ -179,6 +185,10 @@ const updateBashCompletion = () => {
     chalk`{italic source $HOME/.config/slrp/slrp-bash-completion.sh}`
   )
 }
+
+const prettyPrint = (result) => console.log(
+  withColor(JSON.stringify(result, null, 2))
+);
 
 const requireGlobalFunctions = () => {
   try {

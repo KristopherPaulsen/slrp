@@ -156,7 +156,7 @@ describe('slrp', () => {
   })
 
   describe('flags', () => {
-    it('-n  splits newlines', () => {
+    fit('-n  splits newlines', () => {
       const slrp = spawnSync('./index.js', ['-n'], {
         input: 'what\nis\nthis',
       });
@@ -166,7 +166,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual([ 'what', 'is', 'this' ]);
     });
 
-    it('-w  splits whitespace', () => {
+    fit('-w  splits whitespace', () => {
       const slrp = spawnSync('./index.js', ['-w'], {
         input: 'what is this',
       });
@@ -176,7 +176,7 @@ describe('slrp', () => {
       expect(parsedNoColor(result)).toEqual(['what', 'is', 'this' ]);
     });
 
-    it('-f  slurps up file', () => {
+    fit('-f  slurps up file', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt']);
 
       const result = slrp.stdout.toString().trim();
@@ -184,7 +184,7 @@ describe('slrp', () => {
       expect(result).toMatch("I am\ntest text.");
     });
 
-    it('-f  slurps up file and auto-parses it if .json', () => {
+    fit('-f  slurps up file and auto-parses it if .json', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-suffix-check.json', '.hello']);
 
       const result = slrp.stdout.toString().trim();
@@ -192,7 +192,7 @@ describe('slrp', () => {
       expect(result).toMatch("world");
     });
 
-    it('-f  slurps up file and auto-parses it if .js', () => {
+    fit('-f  slurps up file and auto-parses it if .js', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-node-exports.js', '.hello']);
 
       const result = slrp.stdout.toString().trim();
@@ -200,7 +200,7 @@ describe('slrp', () => {
       expect(result).toMatch("world");
     });
 
-    it('-f  slurps up file and auto-parses it if es6 .js', () => {
+    fit('-f  slurps up file and auto-parses it if es6 .js', () => {
       const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-es6-exports.js', '.default.hello']);
 
       const result = slrp.stdout.toString().trim();
