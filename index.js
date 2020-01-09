@@ -10,6 +10,8 @@ const { withColor } = require('./lib/with-color.js')
 const { keys, assign } = Object;
 const getStdin = require('get-stdin');
 
+const xml = require('xml2js');
+
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 
 const main = async () => {
@@ -85,11 +87,9 @@ const main = async () => {
   runAndPrint(args, await getStdin());
 }
 
-const runAndPrint = (args, rawStdin) => {
-  const stdin = rawStdin || args.exec || readFileSync(args.file);
-
+const runAndPrint = async (args, rawStdin) => {
   const result = runStringFuncs({
-    stdin: formatStdin(args, stdin),
+    stdin: await formatStdin(args, rawStdin),
     funcs: args._,
   });
 
@@ -106,17 +106,18 @@ const runAndPrint = (args, rawStdin) => {
   console.log(result);
 }
 
-const formatStdin = (args, stdin) => {
-  stdin = stdin.toString().trim();
+const formatStdin = async (args, rawStdin) => {
+   const stdin = (rawStdin || args.exec || readFileSync(args.file)).toString().trim();
 
   if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(stdin);
   }
-
   if(args.file.match(/\.js$/)) {
-    return require(path.resolve(args.file));
+    return require(args.file);
   }
-
+  if(args.file.match(/\.xml$/)) {
+    return await xml.parseStringPromise(stdin);
+  }
   if(args.newline) {
     return stdin.split("\n");
   }
