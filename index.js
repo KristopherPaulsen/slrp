@@ -80,16 +80,12 @@ const main = async () => {
     return updateBashCompletion();
   }
 
-  if(args.exec || args.file) {
-    return runAndPrint(args);
-  }
-
-  runAndPrint(args, await getStdin());
+  runAndPrint(args);
 }
 
-const runAndPrint = async (args, rawStdin) => {
+const runAndPrint = async (args) => {
   const result = runStringFuncs({
-    stdin: await formatStdin(args, rawStdin),
+    stdin: await getNormalizedStdin(args),
     funcs: args._,
   });
 
@@ -106,8 +102,16 @@ const runAndPrint = async (args, rawStdin) => {
   console.log(result);
 }
 
-const formatStdin = async (args, rawStdin) => {
-   const stdin = (rawStdin || args.exec || readFileSync(args.file)).toString().trim();
+const getNormalizedStdin = async (args) => {
+  const stdin = await (async () => {
+    if(args.file) {
+      return readFileSync(args.file, 'utf8').trim();
+    }
+    if(args.exec) {
+      return '';
+    }
+    return getStdin();
+  })();
 
   if(args.json || args.file.match(/\.json$/)) {
     return JSON.parse(stdin);
