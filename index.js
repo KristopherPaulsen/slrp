@@ -86,10 +86,6 @@ const main = async () => {
     return updateBashCompletion();
   }
 
-  runAndPrint(args);
-}
-
-const runAndPrint = async (args) => {
   const result = runStringFuncs({
     stdin: await getNormalizedStdin(args),
     funcs: args._,
@@ -106,6 +102,39 @@ const runAndPrint = async (args) => {
   }
 
   console.log(result);
+}
+
+ // forgive me, for I have sinned
+const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+  const isIdentityFunc = /^\.$/;
+  const isPropertyAccess = /^\[|^\.\w/;
+  const isThisPropertyAccess = /^this(\.|\[)/;
+  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
+
+  if(func.match(isIdentityFunc)) return result;
+  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result);
+  if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
+  if(func.match(isPropertyAccess)) return eval(`result${func}`);
+
+  return eval(func)(result);
+
+}, stdin);
+
+const printToFile = (args, rawResult) => {
+  const result = typeof(rawResult) === 'string'
+    ? rawResult
+    : JSON.stringify(rawResult, null, '  ');
+
+  const tempPath = path.resolve(
+    args.file + args.inPlace.backupName
+  );
+
+  if(args.inPlace.backupName) {
+    writeFileSync(tempPath, result, 'utf8');
+    writeFileSync(args.file, result);
+  } else {
+    writeFileSync(args.file, result, 'utf8');
+  }
 }
 
 const getNormalizedStdin = async (args) => {
@@ -191,39 +220,6 @@ const requireGlobalFunctions = () => {
     }
   }
 }
-
-const printToFile = (args, rawResult) => {
-  const result = typeof(rawResult) === 'string'
-    ? rawResult
-    : JSON.stringify(rawResult, null, '  ');
-
-  const tempPath = path.resolve(
-    args.file + args.inPlace.backupName
-  );
-
-  if(args.inPlace.backupName) {
-    writeFileSync(tempPath, result, 'utf8');
-    writeFileSync(args.file, result);
-  } else {
-    writeFileSync(args.file, result, 'utf8');
-  }
-}
-
- // forgive me, for I have sinned
-const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
-  const isIdentityFunc = /^\.$/;
-  const isPropertyAccess = /^\[|^\.\w/;
-  const isThisPropertyAccess = /^this(\.|\[)/;
-  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
-
-  if(func.match(isIdentityFunc)) return result;
-  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result);
-  if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
-  if(func.match(isPropertyAccess)) return eval(`result${func}`);
-
-  return eval(func)(result);
-
-}, stdin);
 
 const example = () => `
   echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
