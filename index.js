@@ -32,6 +32,12 @@ const main = async () => {
       describe: 'split stdin by whitespace into array of strings',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('xml', {
+      alias: 'x',
+      type: 'boolean',
+      describe: 'parse incoming xml into object',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .option('json', {
       alias: 'j',
       type: 'boolean',
@@ -108,6 +114,9 @@ const getNormalizedStdin = async (args) => {
   }
   if(args.json) {
     return JSON.parse(await getStdin());
+  }
+  if(args.xml) {
+    return await xml.parseStringPromise(await getStdin());
   }
   if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
