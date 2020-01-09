@@ -103,34 +103,36 @@ const runAndPrint = async (args) => {
 }
 
 const getNormalizedStdin = async (args) => {
-  const stdin = await (async () => {
-    if(args.file) {
-      return readFileSync(args.file, 'utf8').trim();
-    }
-    if(args.exec) {
-      return '';
-    }
-    return getStdin();
-  })();
-
-  if(args.json || args.file.match(/\.json$/)) {
-    return JSON.parse(stdin);
+  if(args.exec) {
+    return '';
   }
-  if(args.file.match(/\.js$/)) {
+  if(args.json) {
+    return JSON.parse(await getStdin());
+  }
+  if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
   }
   if(args.file.match(/\.xml$/)) {
-    return await xml.parseStringPromise(stdin);
+    return await xml.parseStringPromise(
+      readFileSync(args.file, 'utf8').trim()
+    );
+  }
+  if(args.file) {
+    const result = readFileSync(args.file, 'utf8').trim();
+
+    if (args.newline) return result.split("\n");
+    if (args['white-space']) return result.split(" ");
+
+    return result;
   }
   if(args.newline) {
-    return stdin.split("\n");
+    return (await getStdin()).trim().split("\n");
   }
-
   if(args['white-space']) {
-    return stdin.split(" ");
+    return (await getStdin()).trim().split(" ");
   }
 
-  return stdin;
+  return await getStdin();
 }
 
 const updateBashCompletion = () => {
@@ -198,7 +200,7 @@ const printToFile = (args, rawResult) => {
   }
 }
 
-
+ // forgive me, for I have sinned
 const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
@@ -206,7 +208,7 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
   const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
 
   if(func.match(isIdentityFunc)) return result;
-  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result); // forgive me, for I have sinned
+  if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result);
   if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
   if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
