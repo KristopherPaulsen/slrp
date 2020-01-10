@@ -10,9 +10,23 @@ const { withColor } = require('./lib/with-color.js')
 const { keys, assign } = Object;
 const getStdin = require('get-stdin');
 
-const xml = require('xml2js');
-
+const convert = require('xml-js');
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
+
+const XML_OPTIONS = {
+  compact: true,
+  declarationKey: 'declaration',
+  instructionKey: 'instruction',
+  attributesKey: 'attributes',
+  textKey: 'text',
+  cdataKey: 'cdata',
+  doctypeKey: 'doctype',
+  commentKey: 'comment',
+  parentKey: 'parent',
+  typeKey: 'type',
+  nameKey: 'name',
+  elementsKey: 'elements',
+};
 
 const main = async () => {
   requireGlobalFunctions();
@@ -54,7 +68,7 @@ const main = async () => {
     .option('silent', {
       alias: 's',
       type: 'boolean',
-      describe: 'Toggling on will allow you to controll output yourself,\n' +
+      describe: 'Toggling on will allow you to controll output yourself,
                 'and remove automatic printing of last result.',
       coerce: arg => typeof(arg) !== undefined,
     })
@@ -151,8 +165,9 @@ const getNormalizedStdin = async (args) => {
     return require(args.file);
   }
   if(args.file.match(/\.xml$/)) {
-    return await xml.parseStringPromise(
-      readFileSync(args.file, 'utf8').trim()
+    return convert.xml2js(
+      readFileSync(args.file, 'utf8'),
+      XML_OPTIONS
     );
   }
   if(args.file) {
@@ -186,6 +201,7 @@ const updateBashCompletion = () => {
     '-w',
     '-f',
     '-j',
+    '-x',
     '--in-place',
     '--silent',
     '--exec',
@@ -193,6 +209,7 @@ const updateBashCompletion = () => {
     '--white-space',
     '--json',
     '--file',
+    '--xml',
     '--update-bash-completion',
     ...keys(require(CONFIG_PATH).globalFunctions),
   ];
