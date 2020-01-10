@@ -200,6 +200,7 @@ const updateBashCompletion = () => {
     '-n',
     '-w',
     '-f',
+    '-x',
     '-j',
     '-x',
     '--in-place',
