@@ -308,10 +308,10 @@ describe('slrp', () => {
 
     itDockerOnly('should test linux code only', () => {
       const result = execSync(
-        `echo  "HELLO" | node ./index.js .length | node ./index.js 'x => x + x'`
+        `echo  '{ "hello": "world" }' | node ./index.js -j | node ./index.js -j .hello`
       ).toString().trim();
 
-      expect(result).toBe("55");
+      expect(result).toBe("world");
     });
   });
 
