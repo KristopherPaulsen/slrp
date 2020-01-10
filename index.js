@@ -68,8 +68,7 @@ const main = async () => {
     .option('silent', {
       alias: 's',
       type: 'boolean',
-      describe: 'Toggling on will allow you to controll output yourself,
-                'and remove automatic printing of last result.',
+      describe: 'Toggling on will allow you to controll output yourself, and remove automatic printing of last result.',
       coerce: arg => typeof(arg) !== undefined,
     })
     .option('exec', {
