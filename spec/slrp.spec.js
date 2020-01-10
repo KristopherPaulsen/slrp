@@ -303,6 +303,28 @@ describe('slrp', () => {
     });
   });
 
+  describe('trimming, or not trimming, line endings', () => {
+    it('does not trim line endings if present', () => {
+      const slrp = spawnSync('./index.js', ['x => x.length'], {
+        input: 'hello\n'
+      });
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(parsedNoColor(result)).toEqual(6);
+    });
+
+    it('does not add line endings', () => {
+      const slrp = spawnSync('./index.js', ['x => x.length'], {
+        input: 'hello'
+      });
+
+      const result = slrp.stdout.toString().trim();
+
+      expect(parsedNoColor(result)).toEqual(5);
+    });
+  });
+
   describe('multiple piping', () => {
     const itDockerOnly = process.env.SLRP_DOCKER_TEST ? it : it.skip;
 
