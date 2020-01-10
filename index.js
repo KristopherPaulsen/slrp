@@ -185,6 +185,7 @@ const updateBashCompletion = () => {
     '-n',
     '-w',
     '-f',
+    '-x',
     '-j',
     '--in-place',
     '--silent',
@@ -193,6 +194,7 @@ const updateBashCompletion = () => {
     '--white-space',
     '--json',
     '--file',
+    '--xml',
     '--update-bash-completion',
     ...keys(require(CONFIG_PATH).globalFunctions),
   ];
