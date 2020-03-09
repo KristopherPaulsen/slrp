@@ -61,7 +61,14 @@ const main = async () => {
     .option('file', {
       alias: 'f',
       type: 'string',
-      describe: 'path to file to use as stdin',
+      describe: 'filepath to use as stdin (performs auto-conversions by filetype)',
+      default: '',
+      coerce: arg => arg ? path.resolve(arg) : '',
+    })
+    .option('path', {
+      alias: 'p',
+      type: 'string',
+      describe: 'path to file to use as stdin (no auto-conversions by filetype)',
       default: '',
       coerce: arg => arg ? path.resolve(arg) : '',
     })
@@ -138,15 +145,17 @@ const printToFile = (args, rawResult) => {
     ? rawResult
     : JSON.stringify(rawResult, null, '  ');
 
+  const filePath = args.file || args.path;
+
   const tempPath = path.resolve(
-    args.file + args.inPlace.backupName
+    filePath  + args.inPlace.backupName
   );
 
   if(args.inPlace.backupName) {
     writeFileSync(tempPath, result, 'utf8');
-    writeFileSync(args.file, result);
+    writeFileSync(filePath, result);
   } else {
-    writeFileSync(args.file, result, 'utf8');
+    writeFileSync(filePath, result, 'utf8');
   }
 }
 
@@ -159,6 +168,9 @@ const getNormalizedStdin = async (args) => {
   }
   if(args.xml) {
     return await xml.parseStringPromise(await getStdin());
+  }
+  if(args.path) {
+    return await readFileSync(args.path, 'utf8');
   }
   if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
@@ -199,6 +211,7 @@ const updateBashCompletion = () => {
     '-n',
     '-w',
     '-f',
+    '-p',
     '-x',
     '-j',
     '-x',
