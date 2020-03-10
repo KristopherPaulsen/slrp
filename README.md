@@ -118,10 +118,18 @@ split stdin into array of strings by whitespace
 
 `-f`
 
-slurp file path and use as stdin
+slurp file by type, auto-convert, and use as stdin
 
 ```bash
   slrp -f 'path/to/file/here' 'x => someFunctionHere()'
+```
+
+`-p`
+
+slurp file without conversion, and use as stdin'
+
+```bash
+  slrp -p 'path/to/file/here' 'str => str.split(" ")'
 ```
 
 `-s`
