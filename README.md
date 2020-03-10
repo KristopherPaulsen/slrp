@@ -1,7 +1,6 @@
 # slrp
 
 > Make the node command line great again
-</br>
 
 ## Getting Started
 
@@ -126,7 +125,7 @@ slurp file by type, auto-convert, and use as stdin
 
 `-p`
 
-slurp file without conversion, and use as stdin'
+slurp file without conversion, and use as stdin
 
 ```bash
   slrp -p 'path/to/file/here' 'str => str.split(" ")'
@@ -178,6 +177,19 @@ slrp -i -f test-file.txt '() => "I will be added to the file without a backup" '
   "I will be added to the file without a backup"
 
 # No stdin!
+```
+
+## Bash autocompletion
+
+`slrp` can take advantage of autcompletion
+
+`slrp --update-bash-completion`
+
+Source the script!
+```shell
+  Success!: Add the following to your .bashrc or .bash_profile
+
+  source $HOME/.config/slrp/slrp-bash-completion.sh
 ```
 
 ## Custom Functions
