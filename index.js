@@ -169,9 +169,6 @@ const getNormalizedStdin = async (args) => {
   if(args.xml) {
     return await xml.parseStringPromise(await getStdin());
   }
-  if(args.path) {
-    return await readFileSync(args.path, 'utf8');
-  }
   if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
   }
@@ -181,8 +178,8 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
-  if(args.file) {
-    const result = readFileSync(args.file, 'utf8').trim();
+  if(args.file || args.path) {
+    const result = readFileSync(args.file || args.path, 'utf8').trim();
 
     if (args.newline) return result.split("\n");
     if (args['white-space']) return result.split(" ");
