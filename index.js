@@ -100,10 +100,19 @@ const main = async () => {
       describe: 'add bash completion file to unixish systems',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('list', {
+      type: 'string',
+      describe: 'list all custom functions',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .argv;
 
   if(args.updateBashCompletion) {
     return updateBashCompletion();
+  }
+
+  if(args.list) {
+    return 
   }
 
   const result = runStringFuncs({
@@ -240,6 +249,7 @@ const updateBashCompletion = () => {
 const requireGlobalFunctions = () => {
   try {
     const { globalFunctions } = require(CONFIG_PATH);
+    ___GLOABAL___ = globalFunctions;
     assign(global, globalFunctions);
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
