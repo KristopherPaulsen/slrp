@@ -19,11 +19,7 @@ echo "Hello World" | slrp -w this.length
 
 curl pants.rip/echo | slrp -j .reqHeaders.host .length
 
-slrp -i -f /path/to/file.json 'json => ({ ...json, newKey: "value" })'
-
-slrp -i -f /path/to/file.json '{ ...this, newKey: "value" }'
-
-slrp -i -f /path/to/file.txt 'text => text.replace("a", "b")'
+slrp -f /path/to/file.json 'json => ({ ...json, newKey: "value" })'
 ```
 
 
@@ -121,62 +117,6 @@ slurp file by type, auto-convert, and use as stdin
 
 ```bash
   slrp -f 'path/to/file/here' 'x => someFunctionHere()'
-```
-
-`-p`
-
-slurp file without conversion, and use as stdin
-
-```bash
-  slrp -p 'path/to/file/here' 'str => str.split(" ")'
-```
-
-`-s`
-
-Silence, or suppress automatic printing of result. Useful for side-effect one-liners,
-or controlling printing yourself.
-
-```bash
-echo "I will print it MY way" | slrp -s 'x => console.log(x)'
-
-# I will print it MY way!
-```
-
-`-e`
-
-Execute sequence of commands without stdin. Usefull for side-effect one-liners
-
-
-```bash
-slrp -e '() => console.log("No stdin!")'
-
-# No stdin!
-```
-
-`-i`
-
-In place editing of files. Can also create a backup file by suppling an argument to `-i`.
-
-
-```bash
-slrp -i .bak -f test-file.txt '() => "I will be added to the file" '
-
-# inside test-file
-
-  "I will be added to the file"
-
-# inside test-file.txt.bak
-
-  // whatever text was originally in the file
-
-
-slrp -i -f test-file.txt '() => "I will be added to the file without a backup" '
-
-# inside test-file
-
-  "I will be added to the file without a backup"
-
-# No stdin!
 ```
 
 ## Bash autocompletion
