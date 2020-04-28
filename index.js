@@ -65,36 +65,6 @@ const main = async () => {
       default: '',
       coerce: arg => arg ? path.resolve(arg) : '',
     })
-    .option('path', {
-      alias: 'p',
-      type: 'string',
-      describe: 'path to file to use as stdin (no auto-conversions by filetype)',
-      default: '',
-      coerce: arg => arg ? path.resolve(arg) : '',
-    })
-    .option('silent', {
-      alias: 's',
-      type: 'boolean',
-      describe: 'Toggling on will allow you to controll output yourself, and remove automatic printing of last result.',
-      coerce: arg => typeof(arg) !== undefined,
-    })
-    .option('exec', {
-      alias: 'e',
-      type: 'boolean',
-      describe: 'Run in execute mode, no longer using stdin. Runs in silent by default (see -s)',
-      coerce: arg => typeof(arg) !== undefined,
-    })
-    .option('in-place', {
-      alias: 'i',
-      type: 'string',
-      describe: 'edit the file in-place',
-      coerce: arg => {
-        if((typeof(arg)).match(/boolean|null|undefined/gi)) {
-          return { backupName: '' };
-        }
-        return { backupName: arg }
-      },
-    })
     .option('update-bash-completion', {
       type: 'string',
       describe: 'add bash completion file to unixish systems',
@@ -112,7 +82,7 @@ const main = async () => {
   }
 
   if(args.list) {
-    return 
+    return
   }
 
   const result = runStringFuncs({
@@ -120,12 +90,10 @@ const main = async () => {
     funcs: args._,
   });
 
-  if(args.inPlace) {
-    return printToFile(args, result);
-  }
-  if(args.silent || args.exec || result === undefined) {
+  if(result === undefined) {
     return;
   }
+
   if((typeof result).match(/array|object/i)) {
     return console.log(withColor(JSON.stringify(result, null, 2)));
   }
@@ -149,29 +117,7 @@ const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
 
 }, stdin);
 
-const printToFile = (args, rawResult) => {
-  const result = typeof(rawResult) === 'string'
-    ? rawResult
-    : JSON.stringify(rawResult, null, '  ');
-
-  const filePath = args.file || args.path;
-
-  const tempPath = path.resolve(
-    filePath  + args.inPlace.backupName
-  );
-
-  if(args.inPlace.backupName) {
-    writeFileSync(tempPath, result, 'utf8');
-    writeFileSync(filePath, result);
-  } else {
-    writeFileSync(filePath, result, 'utf8');
-  }
-}
-
 const getNormalizedStdin = async (args) => {
-  if(args.exec) {
-    return '';
-  }
   if(args.json) {
     return JSON.parse(await getStdin());
   }
@@ -187,8 +133,8 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
-  if(args.file || args.path) {
-    const result = readFileSync(args.file || args.path, 'utf8').trim();
+  if(args.file) {
+    const result = readFileSync(args.file, 'utf8').trim();
 
     if (args.newline) return result.split("\n");
     if (args['white-space']) return result.split(" ");
