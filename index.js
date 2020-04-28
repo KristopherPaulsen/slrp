@@ -122,7 +122,10 @@ const getNormalizedStdin = async (args) => {
     return JSON.parse(await getStdin());
   }
   if(args.xml) {
-    return await xml.parseStringPromise(await getStdin());
+    return convert.xml2js(
+      await getStdin(),
+      XML_OPTIONS
+    );
   }
   if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
