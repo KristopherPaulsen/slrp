@@ -19,288 +19,211 @@ const testCleanup= () => {
   } catch (error){};
 };
 
-describe('slrp', () => {
-  describe('chaining functions', () => {
-    it('passes stdin to string function', () => {
-      const slrp = spawnSync('./index.js', ['x => x.length'], {
-        input: 'hello',
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('5');
+  it('passes stdin to string function', () => {
+    const slrp = spawnSync('./index.js', ['x => x.length'], {
+      input: 'hello',
     });
 
-    it('chains results of two function strings', () => {
-      const slrp = spawnSync('./index.js', ['x => x.length', 'x => x + x'], {
-        input: 'hello',
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString();
+    expect(result).toMatch('5');
+  });
 
-      expect(result).toMatch('10');
+  it('chains results of two function strings', () => {
+    const slrp = spawnSync('./index.js', ['x => x.length', 'x => x + x'], {
+      input: 'hello',
     });
 
-    it('calls required functions from custom functions file (lodash global methods)', () => {
-      const slrp = spawnSync('./index.js', ['size'], {
-        input: 'hello',
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString();
+    expect(result).toMatch('10');
+  });
 
-      expect(result).toMatch('5');
-    })
-
-    it('chains functions and required custom functions together', () => {
-      const slrp = spawnSync('./index.js', ['x => x + x', 'size'], {
-        input: 'hello',
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('10');
-    })
-
-    it('this  can access properties', () => {
-      const slrp = spawnSync('./index.js', ['-n', 'this[0].length'], {
-        input: 'hello\nworld'
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('5');
+  it('calls required functions from custom functions file (lodash global methods)', () => {
+    const slrp = spawnSync('./index.js', ['size'], {
+      input: 'hello',
     });
 
-    it('this  can spread properties using', () => {
-      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "newValue" }'], {
-        input: '{ "key": "value" }',
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString();
-
-      expect(parsedNoColor(result)).toEqual({ key: "value", added: "newValue" });
-    });
-
-    it('this  can spread properties and use method calls ', () => {
-      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: this.key }'], {
-        input: '{ "key": "value" }',
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(parsedNoColor(result)).toEqual({ key: "value", added: "value" });
-    });
-
-    it(`this  doesn't do some tricky dicky regex replace`, () => {
-      const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "this.key" }'], {
-        input: '{ "key": "value" }',
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(parsedNoColor(result)).toEqual({ key: "value", added: "this.key" });
-    });
+    expect(result).toMatch('5');
   })
 
-
-  describe('property assessor shorthand', () => {
-    it('calls method off of data', () => {
-      const slrp = spawnSync('./index.js', ['.length'], {
-        input: 'hello',
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('5');
+  it('chains functions and required custom functions together', () => {
+    const slrp = spawnSync('./index.js', ['x => x + x', 'size'], {
+      input: 'hello',
     });
 
-    it('indexes off of data', () => {
-      const slrp = spawnSync('./index.js', ['[1]'], {
-        input: 'hello',
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('e');
-    });
-
-    it('bracket-notations off of data', () => {
-      const slrp = spawnSync('./index.js', ['JSON.parse', '["hello-there"]'], {
-        input: JSON.stringify({"hello-there": "hello"}),
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('hello');
-    })
-
-    it('can combine indexing AND method calls', () => {
-      const slrp = spawnSync('./index.js', ['x => x.split(" ")', '[0].length'], {
-        input: 'hello world'
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('5');
-    })
-
-    it('can combine multiple indexing', () => {
-      const slrp = spawnSync('./index.js', ['[0][0]'], {
-        input: 'hello world'
-      });
-
-      const result = slrp.stdout.toString();
-
-      expect(result).toMatch('h');
-    });
+    expect(result).toMatch('10');
   })
 
-  describe('flags', () => {
-    it('-n  splits newlines', () => {
-      const slrp = spawnSync('./index.js', ['-n'], {
-        input: 'what\nis\nthis',
-      });
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(parsedNoColor(result)).toEqual([ 'what', 'is', 'this' ]);
+  it('this  can access properties', () => {
+    const slrp = spawnSync('./index.js', ['-n', 'this[0].length'], {
+      input: 'hello\nworld'
     });
 
-    it('-w  splits whitespace', () => {
-      const slrp = spawnSync('./index.js', ['-w'], {
-        input: 'what is this',
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(result).toMatch('5');
+  });
 
-      expect(parsedNoColor(result)).toEqual(['what', 'is', 'this' ]);
+  it('this  can spread properties using', () => {
+    const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "newValue" }'], {
+      input: '{ "key": "value" }',
     });
 
-    it('-f  slurps up file', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt']);
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(parsedNoColor(result)).toEqual({ key: "value", added: "newValue" });
+  });
 
-      expect(result).toMatch("I am\ntest text.");
+  it('this  can spread properties and use method calls ', () => {
+    const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: this.key }'], {
+      input: '{ "key": "value" }',
     });
 
-    it('-f  slurps up file and auto-parses it if .json', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-suffix-check.json', '.hello']);
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(parsedNoColor(result)).toEqual({ key: "value", added: "value" });
+  });
 
-      expect(result).toMatch("world");
+  it(`this  doesn't do some tricky dicky regex replace`, () => {
+    const slrp = spawnSync('./index.js', ['-j', '{ ...this, added: "this.key" }'], {
+      input: '{ "key": "value" }',
     });
 
-    it('-f  slurps up file and auto-parses it if .js', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-node-exports.js', '.hello']);
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(parsedNoColor(result)).toEqual({ key: "value", added: "this.key" });
+  });
 
-      expect(result).toMatch("world");
+  it('calls method off of data', () => {
+    const slrp = spawnSync('./index.js', ['.length'], {
+      input: 'hello',
     });
 
-    it('-f  slurps up file and auto-parses it if es6 .js', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-es6-exports.js', '.default.hello']);
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(result).toMatch('5');
+  });
 
-      expect(result).toEqual('world');
+  it('indexes off of data', () => {
+    const slrp = spawnSync('./index.js', ['[1]'], {
+      input: 'hello',
     });
 
-    it('-j  slurps json into a parsed, usable, object', () => {
-      const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
-        input: JSON.stringify({ someKey: "some value" }),
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(result).toMatch('e');
+  });
 
-      expect(result).toEqual("some value");
+  it('bracket-notations off of data', () => {
+    const slrp = spawnSync('./index.js', ['JSON.parse', '["hello-there"]'], {
+      input: JSON.stringify({"hello-there": "hello"}),
     });
 
-    it('-s  returns nothing if using silent flag without explicit printing', () => {
-      const slrp = spawnSync('./index.js', ['-s', '(stdin) => stdin'], {
-        input: JSON.stringify({ someKey: "some value" }),
-      });
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
-
-      expect(result).toEqual('');
-    });
-
-    it('-s  prints ONLY user-specified output', () => {
-      const slrp = spawnSync('./index.js',  ['-s', '() => console.log("custom print")'], {
-        input: 'unused',
-      });
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(result).toEqual('custom print');
-    });
-
-    it('-e  executes single statement without stdin', () => {
-      const slrp = spawnSync('./index.js', ['-e', '() => console.log("custom print")']);
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(result).toEqual('custom print');
-    });
-
+    expect(result).toMatch('hello');
   })
 
-  describe('-i  editting a file in-place', () => {
-    beforeAll(() => {
-      testCleanup();
-      fs.openSync(testFile.name, 'w');
+  it('can combine indexing AND method calls', () => {
+    const slrp = spawnSync('./index.js', ['x => x.split(" ")', '[0].length'], {
+      input: 'hello world'
     });
 
-    afterAll(testCleanup);
+    const result = slrp.stdout.toString();
 
-    it('adds text to file', () => {
-      fs.openSync(testFile.name, 'w');
-
-      spawnSync(
-        './index.js',
-        ['-i', '-f', testFile.name, '() => "added text"']
-      );
-
-      const result = fs.readFileSync(testFile.name, 'utf8');
-
-      expect(result).toEqual('added text');
-    });
-
-    it('edits in-place, with backup file', () => {
-      spawnSync(
-        './index.js',
-        ['-i', testFile.backupSuffix, '-f', testFile.name, '() => "original text" ']
-      );
-
-      fs.writeFileSync(testFile.name, 'changed text');
-
-      const result = fs.readFileSync(testFile.name, 'utf8');
-      const backupResult = fs.readFileSync(testFile.backupName, 'utf8');
-
-      expect(backupResult).toEqual('original text');
-      expect(result).toEqual('changed text');
-    });
+    expect(result).toMatch('5');
   })
 
-  describe('chaning funcs, flags, and files', () => {
-    it('-n, -f  splits newlines and slurps file', () => {
-      const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
-
-      const result = slrp.stdout.toString().trim();
-
-      expect(parsedNoColor(result)).toEqual([ 'I am', 'test text.' ]);
+  it('can combine multiple indexing', () => {
+    const slrp = spawnSync('./index.js', ['[0][0]'], {
+      input: 'hello world'
     });
 
-    it('-w, -f  splits whitespace and slurps file', () => {
-      const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/newline-separated-sentences.txt']);
+    const result = slrp.stdout.toString();
 
-      const result = slrp.stdout.toString().trim();
+    expect(result).toMatch('h');
+  });
 
-      expect(parsedNoColor(result)).toEqual([ "I", "am\ntest", "text." ]);
+  it('-n  splits newlines', () => {
+    const slrp = spawnSync('./index.js', ['-n'], {
+      input: 'what\nis\nthis',
     });
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(parsedNoColor(result)).toEqual([ 'what', 'is', 'this' ]);
+  });
+
+  it('-w  splits whitespace', () => {
+    const slrp = spawnSync('./index.js', ['-w'], {
+      input: 'what is this',
+    });
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(parsedNoColor(result)).toEqual(['what', 'is', 'this' ]);
+  });
+
+  it('-f  slurps up file', () => {
+    const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(result).toMatch("I am\ntest text.");
+  });
+
+  it('-f  slurps up file and auto-parses it if .json', () => {
+    const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-suffix-check.json', '.hello']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(result).toMatch("world");
+  });
+
+  it('-f  slurps up file and auto-parses it if .js', () => {
+    const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-node-exports.js', '.hello']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(result).toMatch("world");
+  });
+
+  it('-f  slurps up file and auto-parses it if es6 .js', () => {
+    const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-es6-exports.js', '.default.hello']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(result).toEqual('world');
+  });
+
+  it('-j  slurps json into a parsed, usable, object', () => {
+    const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
+      input: JSON.stringify({ someKey: "some value" }),
+    });
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(result).toEqual("some value");
+  });
+  it('-n, -f  splits newlines and slurps file', () => {
+    const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(parsedNoColor(result)).toEqual([ 'I am', 'test text.' ]);
+  });
+
+  it('-w, -f  splits whitespace and slurps file', () => {
+    const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/newline-separated-sentences.txt']);
+
+    const result = slrp.stdout.toString().trim();
+
+    expect(parsedNoColor(result)).toEqual([ "I", "am\ntest", "text." ]);
   });
 
   describe('trimming, or not trimming, line endings', () => {
@@ -354,4 +277,3 @@ describe('slrp', () => {
   //  no file
   //  defaults to file when using stdin
 
-});
