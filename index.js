@@ -82,7 +82,9 @@ const main = async () => {
   }
 
   if(args.list) {
-    return
+    return keys(require(CONFIG_PATH).globalFunctions)
+      .sort()
+      .forEach(fn => console.log(fn))
   }
 
   const result = runStringFuncs({
