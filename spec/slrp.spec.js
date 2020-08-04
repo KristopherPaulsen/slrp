@@ -3,6 +3,7 @@ const path = require('path');
 const { execSync, openSync, spawnSync } = require('child_process');
 const { withColor } = require('../lib/with-color.js');
 const os = require('os');
+const tmp = require('tmp');
 
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
 
@@ -209,16 +210,33 @@ it('-p  slurps up file and treats as raw text', () => {
 });
 
 it('-i, p slurps up file, treats data as raw text, and edits inplace', () => {
-  fs.writeFileSync('spec/file-for-editing.txt', 'hello world', 'utf8');
+  const tmpFile = tmp.fileSync();
+  fs.writeFileSync(tmpFile.name, "Hello world");
 
-  spawnSync('./index.js', ['-i','-p', 'spec/file-for-editing.txt', 'x => x.replace("world", "swirl")']);
+  spawnSync(
+    './index.js',
+    ['-i','-p', tmpFile.name, 'text => text.replace("world", "swirl")']
+  );
 
-  const result = fs.readFileSync('spec/file-for-editing.txt').toString();
-
-  expect(result).toEqual("hello swirl");
-
-  fs.writeFileSync('spec/file-for-editing.txt', 'hello world', 'utf8');
+  expect(fs.readFileSync(tmpFile.name).toString()).toEqual("Hello swirl");
 });
+
+it('-i, f slurps up file, auto converts data, and edits inplace', () => {
+  const tmpFile = tmp.fileSync({ postfix: '.json' });
+  fs.writeFileSync(tmpFile.name, '{ "foo": "bar" }');
+
+  spawnSync(
+    './index.js',
+    ['-i','-f', tmpFile.name, 'x => ({ ...x, new: "key" })']
+  );
+
+  expect(JSON.parse(fs.readFileSync(tmpFile.name).toString()))
+    .toEqual({
+      foo: "bar",
+      new: "key",
+    });
+});
+
 
 it('-j  slurps json into a parsed, usable, object', () => {
   const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
@@ -229,6 +247,7 @@ it('-j  slurps json into a parsed, usable, object', () => {
 
   expect(result).toEqual("some value");
 });
+
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
 
