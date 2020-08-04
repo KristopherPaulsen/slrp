@@ -65,14 +65,21 @@ const main = async () => {
       default: '',
       coerce: arg => arg ? path.resolve(arg) : '',
     })
-    .option('update-bash-completion', {
-      type: 'string',
-      describe: 'add bash completion file to unixish systems',
-      coerce: arg => typeof(arg) !== undefined,
-    })
     .option('list', {
       type: 'string',
       describe: 'list all custom functions',
+      coerce: arg => typeof(arg) !== undefined,
+    })
+    .option('path', {
+      alias: 'p',
+      type: 'string',
+      describe: 'path to file to slrp verbatim',
+      default: '',
+      coerce: arg => arg ? path.resolve(arg) : '',
+    })
+    .option('update-bash-completion', {
+      type: 'string',
+      describe: 'add bash completion file to unixish systems',
       coerce: arg => typeof(arg) !== undefined,
     })
     .argv;
@@ -138,8 +145,8 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
-  if(args.file) {
-    const result = readFileSync(args.file, 'utf8').trim();
+  if(args.file || args.path) {
+    const result = readFileSync(args.file || args.path, 'utf8').trim();
 
     if (args.newline) return result.split("\n");
     if (args['white-space']) return result.split(" ");
@@ -172,7 +179,7 @@ const updateBashCompletion = () => {
     '-x',
     '-j',
     '-x',
-    '--in-place',
+    '-p',
     '--silent',
     '--exec',
     '--newline',

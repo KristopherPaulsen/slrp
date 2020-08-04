@@ -116,7 +116,15 @@ split stdin into array of strings by whitespace
 slurp file by type, auto-convert, and use as stdin
 
 ```bash
-  slrp -f 'path/to/file/here' 'x => someFunctionHere()'
+  slrp -f 'path/to/file/here.json' 'json => json.someKey'
+```
+
+`-p`
+
+slurp file without conversion, treated as text
+
+```bash
+  slrp -f 'path/to/file/here' 'text => someFunction(text)'
 ```
 
 ## Bash autocompletion
