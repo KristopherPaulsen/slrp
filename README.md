@@ -127,6 +127,22 @@ slurp file without conversion, treated as text
   slrp -p '/path/to/file/here' 'text => someFunction(text)'
 ```
 
+`-i -p`
+
+slurp file and edit in place (no conversion);
+
+```bash
+  slrp -i -p '/path/to/file/here.txt' 'text => someFunction(text)'
+```
+
+`-i -f`
+
+slurp file and edit in place with auto-conversion;
+
+```bash
+  slrp -i -f '/path/to/file/here.json' 'json => ({ ...json, keyHere: "newValue" })'
+```
+
 ## Bash autocompletion
 
 `slrp` can take advantage of autcompletion
