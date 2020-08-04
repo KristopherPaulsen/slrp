@@ -26,7 +26,8 @@
     "slrp": "./index.js"
   },
   "devDependencies": {
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "tmp": "^0.2.1"
   },
   "dependencies": {
     "chalk": "^3.0.0",
