@@ -76,6 +76,12 @@ const main = async () => {
       describe: 'whether or not to edit file in place',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('linewise', {
+      alias: 'l',
+      type: 'boolean',
+      describe: 'whether or not to edit each line individually',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .option('path', {
       alias: 'p',
       type: 'string',
@@ -100,11 +106,11 @@ const main = async () => {
       .forEach(fn => console.log(fn))
   }
 
-  const result = runStringFuncs({
-    args,
-    funcs: args._,
-    stdin: await getNormalizedStdin(args),
-  });
+  const stdin = await getNormalizedStdin(args);
+  const funcs = args._;
+  const result = args.linewise
+    ? mapStringFuncs({ funcs, stdin })
+    : reduceStringFuncs({ args, funcs, stdin });
 
   if(args.inplace) {
     return writeToFile({ args, result });
@@ -121,8 +127,7 @@ const main = async () => {
   console.log(result);
 }
 
- // forgive me, for I have sinned
-const runStringFuncs = ({ args, funcs, stdin }) => funcs.reduce((result, func) => {
+const evaluate = ({ func, result }) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
   const isThisPropertyAccess = /^this(\.|\[)/;
@@ -133,9 +138,17 @@ const runStringFuncs = ({ args, funcs, stdin }) => funcs.reduce((result, func) =
   if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
   if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
-  return eval(func)(result);
 
-}, stdin);
+  return eval(func)(result);
+}
+
+ // forgive me, for I have sinned
+const reduceStringFuncs = ({ args, funcs, stdin }) =>
+  funcs.reduce((result, func) => evaluate({ func, result }), stdin);
+
+const mapStringFuncs = ({ funcs, stdin }) => stdin.map(line =>
+  funcs.reduce((result, func) => evaluate({ func, result: line }), funcs[0])
+)
 
 const getNormalizedStdin = async (args) => {
   if(args.json) {
@@ -159,7 +172,7 @@ const getNormalizedStdin = async (args) => {
   if(args.file || args.path) {
     const result = readFileSync(args.file || args.path, 'utf8').trim();
 
-    if (args.newline) return result.split("\n");
+    if (args.newline || args.linewise) return result.split("\n");
     if (args['white-space']) return result.split(" ");
 
     return result;
@@ -176,6 +189,10 @@ const getNormalizedStdin = async (args) => {
 
 const writeToFile = ({ args, result }) => {
   const filePath = args.file || args.path;
+
+  if(args.linewise) {
+    return writeFileSync(filePath, result.join("\n"), 'utf8');
+  }
 
   if(filePath.match(/\.json$|\.js$/)) {
     return writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf8');
