@@ -1,6 +1,6 @@
 # slrp
 
-> Make the node command line great again
+> One line at a time is good, but what about all the lines at a time?
 
 ## Getting Started
 
