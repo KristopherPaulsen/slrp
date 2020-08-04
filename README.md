@@ -127,14 +127,6 @@ slurp file without conversion, treated as text
   slrp -p '/path/to/file/here' 'text => someFunction(text)'
 ```
 
-`-i`
-
-slurp file without conversion, treated as text, and edit in place
-
-```bash
-  slrp -i 'path/to/file/here' 'text => editTextInPlace(text)'
-```
-
 ## Bash autocompletion
 
 `slrp` can take advantage of autcompletion

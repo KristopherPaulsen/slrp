@@ -208,10 +208,10 @@ it('-p  slurps up file and treats as raw text', () => {
   expect(slrp.stdout.toString()).toEqual;
 });
 
-it('-i  slurps up file, treats data as raw text, and edits inplace', () => {
+it('-i, p slurps up file, treats data as raw text, and edits inplace', () => {
   fs.writeFileSync('spec/file-for-editing.txt', 'hello world', 'utf8');
 
-  spawnSync('./index.js', ['-i', 'spec/file-for-editing.txt', 'x => x.replace("world", "swirl")']);
+  spawnSync('./index.js', ['-i','-p', 'spec/file-for-editing.txt', 'x => x.replace("world", "swirl")']);
 
   const result = fs.readFileSync('spec/file-for-editing.txt').toString();
 

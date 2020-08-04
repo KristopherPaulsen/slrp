@@ -72,10 +72,9 @@ const main = async () => {
     })
     .option('inplace', {
       alias: 'i',
-      type: 'string',
-      describe: 'path to file to edit inplace',
-      default: '',
-      coerce: arg => arg ? path.resolve(arg) : '',
+      type: 'boolean',
+      describe: 'whether or not to edit file in place',
+      coerce: arg => typeof(arg) !== undefined,
     })
     .option('path', {
       alias: 'p',
@@ -108,7 +107,7 @@ const main = async () => {
   });
 
   if(args.inplace) {
-    return writeFileSync(args.inplace, result, 'utf8')
+    return writeToFile({ args, result });
   }
 
   if(result === undefined) {
@@ -157,8 +156,8 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
-  if(args.file || args.path || args.inplace) {
-    const result = readFileSync(args.file || args.path || args.inplace, 'utf8').trim();
+  if(args.file || args.path) {
+    const result = readFileSync(args.file || args.path, 'utf8').trim();
 
     if (args.newline) return result.split("\n");
     if (args['white-space']) return result.split(" ");
@@ -173,6 +172,20 @@ const getNormalizedStdin = async (args) => {
   }
 
   return await getStdin();
+}
+
+const writeToFile = ({ args, result }) => {
+  const filePath = args.file || args.path;
+
+  if(filePath.match(/\.json$|\.js$/)) {
+    return writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf8');
+  }
+
+  if(filePath.match(/\.xml$/)) {
+    return convert.json2xml(JSON.stringify(result), XML_OPTIONS);
+  }
+
+  writeFileSync(filePath, result, 'utf8');
 }
 
 const updateBashCompletion = () => {
