@@ -120,6 +120,10 @@ const main = async () => {
     return;
   }
 
+  if(args.linewise) {
+    return console.log(result.join("\n"));
+  }
+
   if((typeof result).match(/array|object/i)) {
     return console.log(withColor(JSON.stringify(result, null, 2)));
   }
