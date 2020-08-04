@@ -192,6 +192,7 @@ const updateBashCompletion = () => {
     '-j',
     '-x',
     '-p',
+    'i',
     '--silent',
     '--exec',
     '--newline',

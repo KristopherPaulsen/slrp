@@ -116,7 +116,7 @@ split stdin into array of strings by whitespace
 slurp file by type, auto-convert, and use as stdin
 
 ```bash
-  slrp -f 'path/to/file/here.json' 'json => json.someKey'
+  slrp -f 'path/to/file/here.json' 'ojbect => object.someKey'
 ```
 
 `-p`
@@ -124,7 +124,15 @@ slurp file by type, auto-convert, and use as stdin
 slurp file without conversion, treated as text
 
 ```bash
-  slrp -f 'path/to/file/here' 'text => someFunction(text)'
+  slrp -p '/path/to/file/here' 'text => someFunction(text)'
+```
+
+`-i`
+
+slurp file without conversion, treated as text, and edit in place
+
+```bash
+  slrp -i 'path/to/file/here' 'text => editTextInPlace(text)'
 ```
 
 ## Bash autocompletion
