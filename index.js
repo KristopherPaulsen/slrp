@@ -211,8 +211,6 @@ const updateBashCompletion = () => {
   const pathToCompletions = path.join(CONFIG_PATH, 'slrp-bash-completion.sh');
 
   const completions = [
-    '-i',
-    '-e',
     '-e',
     '-s',
     '-n',
@@ -222,7 +220,6 @@ const updateBashCompletion = () => {
     '-x',
     '-j',
     '-x',
-    '-p',
     '-i',
     '--silent',
     '--exec',
