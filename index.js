@@ -127,6 +127,7 @@ const main = async () => {
   console.log(result);
 }
 
+ // forgive me, for I have sinned
 const evaluate = (func, result) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
@@ -142,7 +143,6 @@ const evaluate = (func, result) => {
   return eval(func)(result);
 }
 
- // forgive me, for I have sinned
 const reduceStringFuncs = ({ args, funcs, stdin }) =>
   funcs.reduce((result, func) => evaluate(func, result), stdin);
 
