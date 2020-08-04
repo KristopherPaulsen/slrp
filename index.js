@@ -205,7 +205,7 @@ const updateBashCompletion = () => {
     '-j',
     '-x',
     '-p',
-    'i',
+    '-i',
     '--silent',
     '--exec',
     '--newline',
