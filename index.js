@@ -127,7 +127,7 @@ const main = async () => {
   console.log(result);
 }
 
-const evaluate = ({ func, result }) => {
+const evaluate = (func, result) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
   const isThisPropertyAccess = /^this(\.|\[)/;
@@ -144,10 +144,10 @@ const evaluate = ({ func, result }) => {
 
  // forgive me, for I have sinned
 const reduceStringFuncs = ({ args, funcs, stdin }) =>
-  funcs.reduce((result, func) => evaluate({ func, result }), stdin);
+  funcs.reduce((result, func) => evaluate(func, result), stdin);
 
 const mapStringFuncs = ({ funcs, stdin }) => stdin.map(line =>
-  funcs.reduce((result, func) => evaluate({ func, result: line }), funcs[0])
+  funcs.reduce((result, func) => evaluate(func, line), funcs[0])
 )
 
 const getNormalizedStdin = async (args) => {
