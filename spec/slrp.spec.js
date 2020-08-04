@@ -209,7 +209,17 @@ it('-p  slurps up file and treats as raw text', () => {
   expect(slrp.stdout.toString()).toEqual;
 });
 
-it('-i, p slurps up file, treats data as raw text, and edits inplace', () => {
+it('-j  slurps json into a parsed, usable, object', () => {
+  const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
+    input: JSON.stringify({ someKey: "some value" }),
+  });
+
+  const result = slrp.stdout.toString().trim();
+
+  expect(result).toEqual("some value");
+});
+
+it('-i, -p slurps up file, treats data as raw text, and edits inplace', () => {
   const tmpFile = tmp.fileSync();
   fs.writeFileSync(tmpFile.name, "Hello world");
 
@@ -221,7 +231,7 @@ it('-i, p slurps up file, treats data as raw text, and edits inplace', () => {
   expect(fs.readFileSync(tmpFile.name).toString()).toEqual("Hello swirl");
 });
 
-it('-i, f slurps up file, auto converts data, and edits inplace', () => {
+it('-i, -f slurps up file, auto converts data, and edits inplace', () => {
   const tmpFile = tmp.fileSync({ postfix: '.json' });
   fs.writeFileSync(tmpFile.name, '{ "foo": "bar" }');
 
@@ -237,16 +247,6 @@ it('-i, f slurps up file, auto converts data, and edits inplace', () => {
     });
 });
 
-
-it('-j  slurps json into a parsed, usable, object', () => {
-  const slrp = spawnSync('./index.js', ['-j', '.someKey'], {
-    input: JSON.stringify({ someKey: "some value" }),
-  });
-
-  const result = slrp.stdout.toString().trim();
-
-  expect(result).toEqual("some value");
-});
 
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
