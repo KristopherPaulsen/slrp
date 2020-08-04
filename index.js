@@ -70,6 +70,13 @@ const main = async () => {
       describe: 'list all custom functions',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('inplace', {
+      alias: 'i',
+      type: 'string',
+      describe: 'path to file to edit inplace',
+      default: '',
+      coerce: arg => arg ? path.resolve(arg) : '',
+    })
     .option('path', {
       alias: 'p',
       type: 'string',
@@ -95,9 +102,14 @@ const main = async () => {
   }
 
   const result = runStringFuncs({
-    stdin: await getNormalizedStdin(args),
+    args,
     funcs: args._,
+    stdin: await getNormalizedStdin(args),
   });
+
+  if(args.inplace) {
+    return writeFileSync(args.inplace, result, 'utf8')
+  }
 
   if(result === undefined) {
     return;
@@ -111,7 +123,7 @@ const main = async () => {
 }
 
  // forgive me, for I have sinned
-const runStringFuncs = ({ funcs, stdin }) => funcs.reduce((result, func) => {
+const runStringFuncs = ({ args, funcs, stdin }) => funcs.reduce((result, func) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
   const isThisPropertyAccess = /^this(\.|\[)/;
@@ -145,8 +157,8 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
-  if(args.file || args.path) {
-    const result = readFileSync(args.file || args.path, 'utf8').trim();
+  if(args.file || args.path || args.inplace) {
+    const result = readFileSync(args.file || args.path || args.inplace, 'utf8').trim();
 
     if (args.newline) return result.split("\n");
     if (args['white-space']) return result.split(" ");
