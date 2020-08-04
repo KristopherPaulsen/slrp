@@ -298,20 +298,6 @@ describe('multiple piping', () => {
   });
 });
 
-//describe('pretty-print and colorize json', () => {
-//it('-j pretty prints json', () => {
-//const slrp = spawnSync('./index.js', ['-j'], {
-//input: JSON.stringify({ hello: 'world' })
-//});
 
-//const result = slrp.stdout.toString().trim();
-
-//expect(result).toEqual(withColor(JSON.stringify({ hello: 'world' }, null, 2)));
-//});
-//})
-
-// weird inputs
-//  no stdin
-//  no file
-//  defaults to file when using stdin
-
+// check for line endings
+// check for line beginings

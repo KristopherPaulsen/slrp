@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 require = require("esm")(module);
-const yargs = require('yargs');
 const { writeFileSync, readFileSync } = require('fs');
-const os = require('os');
-const path = require('path');
-const chalk = require("chalk");
+const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
 const { withColor } = require('./lib/with-color.js')
 const { keys, assign } = Object;
 const getStdin = require('get-stdin');
+const path = require('path');
+const chalk = require("chalk");
+const yargs = require('yargs');
 
 const convert = require('xml-js');
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
@@ -121,7 +121,7 @@ const main = async () => {
   }
 
   if(args.linewise) {
-    return console.log(result.join("\n"));
+    return console.log(result.join(EOL));
   }
 
   if((typeof result).match(/array|object/i)) {
@@ -166,15 +166,20 @@ const getNormalizedStdin = async (args) => {
     );
   }
   if(args.file || args.path) {
-    const result = readFileSync(args.file || args.path, 'utf8').trim();
+    const result = readFileSync(args.file || args.path, 'utf8');
 
-    if (args.newline || args.linewise) return result.split("\n");
-    if (args['white-space']) return result.split(" ");
+    if (args.newline) {
+      return result.trim().split(EOL);
+    }
+    if (args.linewise) {
+      return result.split(EOL);
+    }
+    if (args['white-space']) return result.trim().split(" ");
 
     return result;
   }
   if(args.newline) {
-    return (await getStdin()).trim().split("\n");
+    return (await getStdin()).trim().split(EOL);
   }
   if(args['white-space']) {
     return (await getStdin()).trim().split(" ");
@@ -187,7 +192,7 @@ const writeToFile = ({ args, result }) => {
   const filePath = args.file || args.path;
 
   if(args.linewise) {
-    return writeFileSync(filePath, result.join("\n"), 'utf8');
+    return writeFileSync(filePath, result.join(EOL), 'utf8');
   }
 
   if(filePath.match(/\.json$|\.js$/)) {
