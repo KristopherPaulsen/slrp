@@ -109,8 +109,8 @@ const main = async () => {
   const stdin = await getNormalizedStdin(args);
   const funcs = args._;
   const result = args.linewise
-    ? mapStringFuncs({ funcs, stdin })
-    : reduceStringFuncs({ args, funcs, stdin });
+    ? stdin.map(line => funcs.reduce(evaluate, line))
+    : funcs.reduce(evaluate, stdin);
 
   if(args.inplace) {
     return writeToFile({ args, result });
@@ -141,13 +141,6 @@ const evaluate = (result, func) => {
 
   return eval(func)(result);
 }
-
-const reduceStringFuncs = ({ funcs, stdin }) =>
-  funcs.reduce(evaluate, stdin);
-
-const mapStringFuncs = ({ funcs, stdin }) => stdin.map(line =>
-  funcs.reduce((result, func) => evaluate(line, func), funcs[0])
-)
 
 const getNormalizedStdin = async (args) => {
   if(args.json) {
