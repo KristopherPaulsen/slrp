@@ -5,6 +5,7 @@
   "main": "./index.js",
   "scripts": {
     "test": "jest --colors",
+    "test:watch": "jest --colors --watch",
     "test:int": "./scripts/run-dockerized-slrp-tests.sh",
     "pub": "npm run test:int && npm publish"
   },
