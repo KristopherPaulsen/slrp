@@ -26,6 +26,10 @@ const XML_OPTIONS = {
   elementsKey: 'elements',
 };
 
+const SLRP = {
+  EXCLUDE: 'SLRP_EXCLUDE',
+};
+
 const main = async () => {
   requireGlobalFunctions();
   process.stdin.setEncoding('utf8');
@@ -107,7 +111,13 @@ const main = async () => {
   const stdin = await getNormalizedStdin(args);
   const funcs = args._;
   const result = args.linewise
-    ? stdin.map(line => funcs.reduce(evaluate, line))
+    ? stdin.reduce((result, line) => {
+      const output = funcs.reduce(evaluate, line)
+      return output === SLRP.EXCLUDE ? result : [
+        ...result,
+        output,
+      ];
+    }, [])
     : funcs.reduce(evaluate, stdin);
 
   if(args.inplace) {
@@ -237,6 +247,7 @@ const updateBashCompletion = () => {
 
 const requireGlobalFunctions = () => {
   try {
+    global.SLRP = SLRP;
     assign(global, require(CONFIG_PATH).globalFunctions);
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
