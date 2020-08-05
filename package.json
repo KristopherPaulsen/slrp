@@ -26,8 +26,7 @@
     "slrp": "./index.js"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "tmp": "^0.2.1"
+    "jest": "^24.9.0"
   },
   "dependencies": {
     "chalk": "^3.0.0",
@@ -36,6 +35,7 @@
     "indent-string": "^4.0.0",
     "json-colorizer": "^2.2.1",
     "xml-js": "^1.6.11",
-    "yargs": "^15.3.1"
+    "yargs": "^15.3.1",
+    "tmp": "^0.2.1"
   }
 }
