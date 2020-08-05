@@ -9,10 +9,8 @@ const getStdin = require('get-stdin');
 const path = require('path');
 const chalk = require("chalk");
 const yargs = require('yargs');
-
 const convert = require('xml-js');
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
-
 const XML_OPTIONS = {
   compact: true,
   declarationKey: 'declaration',
@@ -142,7 +140,6 @@ const evaluate = (result, func) => {
   if(func.match(isThisPropertyAccess)) return eval(func.replace(/^this/, 'result'));
   if(func.match(isPropertyAccess)) return eval(`result${func}`);
 
-
   return eval(func)(result);
 }
 
@@ -240,9 +237,7 @@ const updateBashCompletion = () => {
 
 const requireGlobalFunctions = () => {
   try {
-    const { globalFunctions } = require(CONFIG_PATH);
-    ___GLOABAL___ = globalFunctions;
-    assign(global, globalFunctions);
+    assign(global, require(CONFIG_PATH).globalFunctions);
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
       throw err
