@@ -172,7 +172,7 @@ const getNormalizedStdin = async (args) => {
       return result.trim().split(EOL);
     }
     if (args.linewise) {
-      return result.split(EOL);
+      return result.replace(/\r\n|\n\r|\n|\r/gi, EOL).split(EOL).slice(0, -1);
     }
     if (args['white-space']) return result.trim().split(" ");
 
