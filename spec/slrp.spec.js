@@ -253,6 +253,16 @@ it('-l, -p reads and applies transformations line by line, preserving newlines o
     .toEqual(fs.readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
 });
 
+it('-l, -p reads and excludes line using SLRP.EXCLUDE', () => {
+  const slrp = spawnSync(
+    './index.js',
+    ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x.length ? x : SLRP.EXCLUDE']
+  );
+
+  expect(slrp.stdout.toString())
+    .toEqual("first\nsecond\n");
+});
+
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
 
