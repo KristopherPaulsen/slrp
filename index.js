@@ -150,42 +150,33 @@ const getNormalizedStdin = async (args) => {
   if(args.json) {
     return JSON.parse(await getStdin());
   }
-  if(args.xml) {
+  else if(args.xml) {
     return convert.xml2js(
       await getStdin(),
       XML_OPTIONS
     );
   }
-  if(args.file.match(/\.json$|\.js$/)) {
+  else if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
   }
-  if(args.file.match(/\.xml$/)) {
+  else if (args.file.match(/\.xml$/)) {
     return convert.xml2js(
       readFileSync(args.file, 'utf8'),
       XML_OPTIONS
     );
   }
-  if(args.file || args.path) {
+  else if(args.file || args.path) {
     const result = readFileSync(args.file || args.path, 'utf8');
 
-    if (args.newline) {
-      return result.trim().split(EOL);
-    }
-    if (args.linewise) {
-      return result.replace(/\r\n|\n\r|\n|\r/gi, EOL).split(EOL).slice(0, -1);
-    }
+    if (args.newline) return result.trim().split(EOL);
+    if (args.linewise) return result.replace(/\r\n|\n\r|\n|\r/gi, EOL).split(EOL).slice(0, -1);
     if (args['white-space']) return result.trim().split(" ");
 
     return result;
   }
-  if(args.newline) {
-    return (await getStdin()).trim().split(EOL);
-  }
-  if(args['white-space']) {
-    return (await getStdin()).trim().split(" ");
-  }
-
-  return await getStdin();
+  else if (args.newline) return (await getStdin()).trim().split(EOL);
+  else if(args['white-space']) return (await getStdin()).trim().split(" ");
+  else return await getStdin();
 }
 
 const writeToFile = ({ args, result }) => {
