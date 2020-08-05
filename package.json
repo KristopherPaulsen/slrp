@@ -1,6 +1,6 @@
 {
   "name": "@kcpaulsen/slrp",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Making node one-liners great again",
   "main": "./index.js",
   "scripts": {
