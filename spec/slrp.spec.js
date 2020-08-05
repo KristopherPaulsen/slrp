@@ -233,6 +233,26 @@ it('-i, -f slurps up file, auto converts data, and edits inplace', () => {
     });
 });
 
+it('-l, -p reads and applies transformations line by line, preserving newlines', () => {
+  const slrp = spawnSync(
+    './index.js',
+    ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x']
+  );
+
+  expect(slrp.stdout.toString())
+    .toEqual(fs.readFileSync('spec/file-for-checking-linewise.txt').toString());
+});
+
+it('-l, -p reads and applies transformations line by line, preserving newlines on one line', () => {
+  const slrp = spawnSync(
+    './index.js',
+    ['-l','-p', 'spec/file-for-checking-linewise-off-by-one.txt', 'x => x']
+  );
+
+  expect(slrp.stdout.toString())
+    .toEqual(fs.readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
+});
+
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
 
