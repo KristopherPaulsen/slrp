@@ -127,6 +127,11 @@ slurp file without conversion, treated as text
   slrp -p '/path/to/file/here' 'text => someFunction(text)'
 ```
 
+`-l`
+
+Slurp file and edit line-by-line, preserving newlines.
+All functions are applied to each line.
+
 `-i -p`
 
 slurp file and edit in place (no conversion);

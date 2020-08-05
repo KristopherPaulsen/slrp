@@ -205,6 +205,17 @@ it('-j  slurps json into a parsed, usable, object', () => {
   expect(result).toEqual("some value");
 });
 
+it('-l reads line by line, preserving newlines', () => {
+  const slrp = spawnSync(
+    './index.js',
+    ['-l', 'x => x'],
+    { input: "first\nsecond\nthird\n" }
+  );
+
+  expect(slrp.stdout.toString())
+    .toEqual("first\nsecond\nthird\n");
+});
+
 it('-i, -p slurps up file, treats data as raw text, and edits inplace', () => {
   const tmpFile = tmp.fileSync();
   fs.writeFileSync(tmpFile.name, "Hello world");
