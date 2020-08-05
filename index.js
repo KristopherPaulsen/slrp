@@ -108,17 +108,11 @@ const main = async () => {
       .forEach(fn => console.log(fn))
   }
 
-  const stdin = await getNormalizedStdin(args);
-  const funcs = args._;
-  const result = args.linewise
-    ? stdin.reduce((result, line) => {
-      const output = funcs.reduce(evaluate, line)
-      return output === SLRP.EXCLUDE ? result : [
-        ...result,
-        output,
-      ];
-    }, [])
-    : funcs.reduce(evaluate, stdin);
+  const result = runStringFuncs({
+    args,
+    stdin: await getNormalizedStdin(args),
+    funcs: args._,
+  })
 
   if(args.inplace) {
     return writeToFile({ args, result });
@@ -137,6 +131,18 @@ const main = async () => {
   }
 
   console.log(result);
+}
+
+const runStringFuncs = ({ stdin, funcs, args }) => {
+  if(!args.linewise) return funcs.reduce(evaluate, stdin);
+
+  return stdin.reduce((result, line) => {
+    const output = funcs.reduce(evaluate, line)
+    return output === SLRP.EXCLUDE ? result : [
+      ...result,
+      output,
+    ];
+  }, []);
 }
 
 const evaluate = (result, func) => {
