@@ -183,10 +183,7 @@ const getNormalizedStdin = async (args) => {
 
     if (args.newline) return result.trim().split(EOL);
     if (args['white-space']) return result.trim().split(" ");
-    if (args.linewise) return result
-      .replace(/\r\n|\n\r|\n|\r/gi, EOL)
-      .split(EOL)
-      .slice(0, -1);
+    if (args.linewise) return result.slice(0, -1).split(EOL)
 
     return result;
   }
@@ -197,10 +194,7 @@ const getNormalizedStdin = async (args) => {
     return (await getStdin()).trim().split(" ");
   }
   else if(args.linewise) {
-    return (await getStdin())
-      .replace(/\r\n|\n\r|\n|\r/gi, EOL)
-      .split(EOL)
-      .slice(0, -1);
+    return (await getStdin()).slice(0, -1).split(EOL)
   }
   else {
     return await getStdin();
@@ -211,7 +205,7 @@ const writeToFile = ({ args, result }) => {
   const filePath = args.file || args.path;
 
   if(args.linewise) {
-    return writeFileSync(filePath, result.join(EOL), 'utf8');
+    return writeFileSync(filePath, result.join(EOL) + EOL, 'utf8');
   }
 
   if(filePath.match(/\.json$|\.js$/)) {
