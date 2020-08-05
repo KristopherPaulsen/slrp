@@ -4,21 +4,7 @@ const { execSync, openSync, spawnSync } = require('child_process');
 const { withColor } = require('../lib/with-color.js');
 const os = require('os');
 const tmp = require('tmp');
-
 const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
-
-const testFile = {
-  name: path.resolve('test-file.text'),
-  backupName: path.resolve(`test-file.text.bak`),
-  backupSuffix: '.bak',
-}
-
-const testCleanup= () => {
-  try {
-    fs.unlinkSync(testFile.name);
-    fs.unlinkSync(testFile.backupName);
-  } catch (error){};
-};
 
 it('passes stdin to string function', () => {
   const slrp = spawnSync('./index.js', ['x => x.length'], {
@@ -246,7 +232,6 @@ it('-i, -f slurps up file, auto converts data, and edits inplace', () => {
       new: "key",
     });
 });
-
 
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
