@@ -135,7 +135,7 @@ const evaluate = (result, func) => {
   const isIdentityFunc = /^\.$/;
   const isPropertyAccess = /^\[|^\.\w/;
   const isThisPropertyAccess = /^this(\.|\[)/;
-  const isJsonSpread = /^\{.*\.\.\.this.*\}/gmi;
+  const isJsonSpread = /^\{\s*\.\.\.this.*\}/gmi;
 
   if(func.match(isIdentityFunc)) return result;
   if(func.match(isJsonSpread)) return eval(`(function() { return ${func}; })`).call(result);
