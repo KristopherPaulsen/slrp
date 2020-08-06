@@ -5,7 +5,7 @@ const {
   createReadStream,
   writeFileSync,
   readFileSync,
-  copyFile,
+  copyFile
 } = require('fs');
 const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
@@ -141,22 +141,24 @@ const main = async () => {
 const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
 
-  const file = args.inplace ? tmp.fileSync() : null;
-  const fileStream = args.inplace ? createWriteStream(file.name, { flags: 'a' }) : null;
+  return stdin.on('line', line => {
+    const output = funcs.reduce(evaluate, line);
+    if(output === SLRP.EXCLUDE) return;
+    process.stdout.write(output + EOL);
+  });
 
-  return stdin
+  const tmpFile = tmp.fileSync();
+  const writer = createWriteStream(tmpFile.name, { flags: 'a' });
+
+  stdin
     .on('line', line => {
       const output = funcs.reduce(evaluate, line);
 
       if(output === SLRP.EXCLUDE) return;
 
-      args.inplace
-        ? fileStream.write(output + EOL)
-        : process.stdout.write(output + EOL);
+      writer.write(output + EOL)
     })
-    .on('close', () => {
-      if(args.inplace) copyFile(file.name, args.path, () => {});
-    })
+    .on('close', () => copyFile(tmpFile.name, args.path, () => {}));
 }
 
 const evaluate = (result, func) => {
