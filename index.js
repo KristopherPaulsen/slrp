@@ -1,15 +1,23 @@
 #!/usr/bin/env node
 require = require("esm")(module);
-const { writeFileSync, readFileSync } = require('fs');
+const {
+  createWriteStream,
+  createReadStream,
+  writeFileSync,
+  readFileSync
+} = require('fs');
 const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
 const { withColor } = require('./lib/with-color.js')
 const { keys, assign } = Object;
 const getStdin = require('get-stdin');
+const readline = require('readline');
 const path = require('path');
 const chalk = require("chalk");
 const yargs = require('yargs');
 const convert = require('xml-js');
+const tmp = require('tmp');
+
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 const XML_OPTIONS = {
   compact: true,
@@ -114,16 +122,12 @@ const main = async () => {
     funcs: args._,
   })
 
-  if(args.inplace) {
-    return writeToFile({ args, result });
-  }
-
-  if(result === undefined) {
+  if(args.linewise || result === undefined) {
     return;
   }
 
-  if(args.linewise) {
-    return console.log(result.join(EOL));
+  if(args.inplace) {
+    return writeToFile({ args, result });
   }
 
   if((typeof result).match(/array|object/i)) {
@@ -135,14 +139,24 @@ const main = async () => {
 
 const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
-
-  return stdin.reduce((result, line) => {
+  if(!args.inplace) return stdin.on('line', line => {
     const output = funcs.reduce(evaluate, line);
-    return output === SLRP.EXCLUDE ? result : [
-      ...result,
-      output,
-    ];
-  }, []);
+    if(output === SLRP.EXCLUDE) return;
+    process.stdout.write(output + EOL);
+  });
+
+  const tmpFile = tmp.fileSync();
+  const writer = createWriteStream(tmpFile.name, { flags: 'a' });
+
+  stdin
+    .on('line', line => {
+      const output = funcs.reduce(evaluate, line);
+
+      if(output === SLRP.EXCLUDE) return;
+
+      writer.write(output + EOL)
+    })
+    .on('close', () => fs.copyFile(tmpFile.name, args.path, (err) => process.stderr.write(err)));
 }
 
 const evaluate = (result, func) => {
@@ -183,7 +197,9 @@ const getNormalizedStdin = async (args) => {
 
     if (args.newline) return result.trim().split(EOL);
     if (args['white-space']) return result.trim().split(" ");
-    if (args.linewise) return result.slice(0, -1).split(EOL)
+    if (args.linewise) return readline.createInterface({
+      input: fs.createReadStream(args.path)
+    })
 
     return result;
   }
@@ -194,7 +210,9 @@ const getNormalizedStdin = async (args) => {
     return (await getStdin()).trim().split(" ");
   }
   else if(args.linewise) {
-    return (await getStdin()).slice(0, -1).split(EOL)
+    return readline.createInterface({
+      input: process.stdin,
+    })
   }
   else {
     return await getStdin();
