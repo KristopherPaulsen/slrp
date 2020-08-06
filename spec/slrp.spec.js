@@ -157,7 +157,7 @@ it('-w  splits whitespace', () => {
 });
 
 it('-f  slurps up file', () => {
-  const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt']);
+  const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-newline-sentences.txt']);
 
   const result = slrp.stdout.toString().trim();
 
@@ -205,7 +205,7 @@ it('-j  slurps json into a parsed, usable, object', () => {
   expect(result).toEqual("some value");
 });
 
-it('-l reads line by line, preserving newlines', () => {
+it('-l  reads line by line, preserving newlines', () => {
   const slrp = spawnSync(
     './index.js',
     ['-l', 'x => x'],
@@ -216,7 +216,7 @@ it('-l reads line by line, preserving newlines', () => {
     .toEqual("first\nsecond\nthird\n");
 });
 
-it('-i, -f slurps up file, auto converts data, and edits inplace', () => {
+it('-i, -f  slurps up file, auto converts data, and edits inplace', () => {
   const tmpFile = tmp.fileSync({ postfix: '.json' });
   fs.writeFileSync(tmpFile.name, '{ "foo": "bar" }');
 
@@ -232,7 +232,7 @@ it('-i, -f slurps up file, auto converts data, and edits inplace', () => {
     });
 });
 
-it('-i, -p slurps up file, treats data as raw text, and edits inplace', () => {
+it('-i, -p  slurps up file, treats data as raw text, and edits inplace', () => {
   const tmpFile = tmp.fileSync();
   fs.writeFileSync(tmpFile.name, "Hello world");
 
@@ -244,7 +244,7 @@ it('-i, -p slurps up file, treats data as raw text, and edits inplace', () => {
   expect(fs.readFileSync(tmpFile.name).toString()).toEqual("Hello swirl");
 });
 
-it('-l, -p reads and applies transformations line by line, preserving newlines', () => {
+it('-l, -p  reads and applies transformations line by line, preserving newlines', () => {
   const slrp = spawnSync(
     './index.js',
     ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x']
@@ -254,7 +254,7 @@ it('-l, -p reads and applies transformations line by line, preserving newlines',
     .toEqual(fs.readFileSync('spec/file-for-checking-linewise.txt').toString());
 });
 
-it('-l, -p reads and applies transformations line by line, preserving newlines on one line', () => {
+it('-l, -p  reads and applies transformations line by line, preserving newlines on one line', () => {
   const slrp = spawnSync(
     './index.js',
     ['-l','-p', 'spec/file-for-checking-linewise-off-by-one.txt', 'x => x']
@@ -264,7 +264,7 @@ it('-l, -p reads and applies transformations line by line, preserving newlines o
     .toEqual(fs.readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
 });
 
-it('-l, -p reads and excludes line using SLRP.EXCLUDE', () => {
+it('-l, -p  reads and excludes line using SLRP.EXCLUDE', () => {
   const slrp = spawnSync(
     './index.js',
     ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x.length ? x : SLRP.EXCLUDE']
@@ -274,7 +274,7 @@ it('-l, -p reads and excludes line using SLRP.EXCLUDE', () => {
     .toEqual("first\nsecond\n");
 });
 
-it('-l, -i, -p slurps up file, and "edits" multiple times preserving newlines', () => {
+it('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines', () => {
   const tmpFile = tmp.fileSync();
   fs.writeFileSync(tmpFile.name, 'first\nsecond\nthird\n');
 
@@ -288,7 +288,7 @@ it('-l, -i, -p slurps up file, and "edits" multiple times preserving newlines', 
 });
 
 it('-n, -f  splits newlines and slurps file', () => {
-  const slrp = spawnSync('./index.js', ['-f', 'spec/newline-separated-sentences.txt', '-n']);
+  const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-newline-sentences.txt', '-n']);
 
   const result = slrp.stdout.toString().trim();
 
@@ -296,7 +296,7 @@ it('-n, -f  splits newlines and slurps file', () => {
 });
 
 it('-w, -f  splits whitespace and slurps file', () => {
-  const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/newline-separated-sentences.txt']);
+  const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/file-for-newline-sentences.txt']);
 
   const result = slrp.stdout.toString().trim();
 
