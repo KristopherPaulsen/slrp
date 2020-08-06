@@ -139,24 +139,23 @@ const main = async () => {
 
 const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
-  if(!args.inplace) return stdin.on('line', line => {
-    const output = funcs.reduce(evaluate, line);
-    if(output === SLRP.EXCLUDE) return;
-    process.stdout.write(output + EOL);
-  });
 
-  const tmpFile = tmp.fileSync();
-  const writer = createWriteStream(tmpFile.name, { flags: 'a' });
+  const file = args.inplace ? tmp.fileSync() : null;
+  const fileStream = args.inplace ? createWriteStream(file.name, { flags: 'a' }) : null;
 
-  stdin
+  return stdin
     .on('line', line => {
       const output = funcs.reduce(evaluate, line);
 
       if(output === SLRP.EXCLUDE) return;
 
-      writer.write(output + EOL)
+      args.inplace
+        ? fileStream.write(output + EOL)
+        : process.stdout.write(output + EOL);
     })
-    .on('close', () => fs.copyFile(tmpFile.name, args.path, () => {}));
+    .on('close', () => {
+      if(args.inplace) fs.copyFile(file.name, args.path, () => {});
+    })
 }
 
 const evaluate = (result, func) => {
