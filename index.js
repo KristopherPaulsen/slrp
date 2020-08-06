@@ -156,7 +156,7 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
 
       writer.write(output + EOL)
     })
-    .on('close', () => fs.copyFile(tmpFile.name, args.path, (err) => process.stderr.write(err)));
+    .on('close', () => fs.copyFile(tmpFile.name, args.path, () => {}));
 }
 
 const evaluate = (result, func) => {
