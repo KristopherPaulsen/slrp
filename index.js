@@ -137,7 +137,7 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
 
   return stdin.reduce((result, line) => {
-    const output = funcs.reduce(evaluate, line)
+    const output = funcs.reduce(evaluate, line);
     return output === SLRP.EXCLUDE ? result : [
       ...result,
       output,
