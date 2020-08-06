@@ -4,7 +4,8 @@ const {
   createWriteStream,
   createReadStream,
   writeFileSync,
-  readFileSync
+  readFileSync,
+  copyFile,
 } = require('fs');
 const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
@@ -154,7 +155,7 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
         : process.stdout.write(output + EOL);
     })
     .on('close', () => {
-      if(args.inplace) fs.copyFile(file.name, args.path, () => {});
+      if(args.inplace) copyFile(file.name, args.path, () => {});
     })
 }
 
@@ -197,7 +198,7 @@ const getNormalizedStdin = async (args) => {
     if (args.newline) return result.trim().split(EOL);
     if (args['white-space']) return result.trim().split(" ");
     if (args.linewise) return readline.createInterface({
-      input: fs.createReadStream(args.path)
+      input: createReadStream(args.path)
     })
 
     return result;
