@@ -287,6 +287,18 @@ it('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines',
     .toEqual('first\nsecond\nthird\n')
 });
 
+//fit('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines', () => {
+  //const tmpFile = tmp.fileSync();
+  //fs.writeFileSync(tmpFile.name, '{\n"foo":"bar"\n}');
+
+  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
+  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
+  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
+
+  //expect(fs.readFileSync(tmpFile.name).toString())
+    //.toEqual('{\n"foo":"bar"\n}')
+//});
+
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-newline-sentences.txt', '-n']);
 
