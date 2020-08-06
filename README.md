@@ -129,8 +129,11 @@ slurp file without conversion, treated as text
 
 `-l`
 
-Slurp file and edit line-by-line, preserving newlines.
-All functions are applied to each line.
+slrp file and work line-by-line
+
+```bash
+  slrp -i -p '/path/to/file/here.txt' 'line => doSomething(line)' 'line => anotherThing(line)'
+```
 
 `-i -p`
 
@@ -146,6 +149,14 @@ slurp file and edit in place with auto-conversion;
 
 ```bash
   slrp -i -f '/path/to/file/here.json' 'json => ({ ...json, keyHere: "newValue" })'
+```
+
+`-l -i -p`
+
+slurp file, edit in place (no conversion), line by line;
+
+```bash
+  slrp -l -i -p '/path/to/file/here.txt' 'line => doSomethingToLine(line)'
 ```
 
 ## Bash autocompletion
