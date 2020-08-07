@@ -1,4 +1,4 @@
-const fs = require('fs');
+const { writeFileSync, readFileSync } = require('fs');
 const path = require('path');
 const { execSync, openSync, spawnSync } = require('child_process');
 const { withColor } = require('../lib/with-color.js');
@@ -218,14 +218,14 @@ it('-l  reads line by line, preserving newlines', () => {
 
 it('-i, -f  slurps up file, auto converts data, and edits inplace', () => {
   const tmpFile = tmp.fileSync({ postfix: '.json' });
-  fs.writeFileSync(tmpFile.name, '{ "foo": "bar" }');
+  writeFileSync(tmpFile.name, '{ "foo": "bar" }');
 
   spawnSync(
     './index.js',
     ['-i','-f', tmpFile.name, 'x => ({ ...x, new: "key" })']
   );
 
-  expect(JSON.parse(fs.readFileSync(tmpFile.name).toString()))
+  expect(JSON.parse(readFileSync(tmpFile.name).toString()))
     .toEqual({
       foo: "bar",
       new: "key",
@@ -234,14 +234,14 @@ it('-i, -f  slurps up file, auto converts data, and edits inplace', () => {
 
 it('-i, -p  slurps up file, treats data as raw text, and edits inplace', () => {
   const tmpFile = tmp.fileSync();
-  fs.writeFileSync(tmpFile.name, "Hello world");
+  writeFileSync(tmpFile.name, "Hello world");
 
   spawnSync(
     './index.js',
     ['-i','-p', tmpFile.name, 'text => text.replace("world", "swirl")']
   );
 
-  expect(fs.readFileSync(tmpFile.name).toString()).toEqual("Hello swirl");
+  expect(readFileSync(tmpFile.name).toString()).toEqual("Hello swirl");
 });
 
 it('-l, -p  reads and applies transformations line by line, preserving newlines', () => {
@@ -251,7 +251,7 @@ it('-l, -p  reads and applies transformations line by line, preserving newlines'
   );
 
   expect(slrp.stdout.toString())
-    .toEqual(fs.readFileSync('spec/file-for-checking-linewise.txt').toString());
+    .toEqual(readFileSync('spec/file-for-checking-linewise.txt').toString());
 });
 
 it('-l, -p  reads and applies transformations line by line, preserving newlines on one line', () => {
@@ -261,7 +261,7 @@ it('-l, -p  reads and applies transformations line by line, preserving newlines 
   );
 
   expect(slrp.stdout.toString())
-    .toEqual(fs.readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
+    .toEqual(readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
 });
 
 it('-l, -p  reads and excludes line using SLRP.EXCLUDE', () => {
@@ -276,14 +276,14 @@ it('-l, -p  reads and excludes line using SLRP.EXCLUDE', () => {
 
 it('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines', () => {
   const tmpFile = tmp.fileSync();
-  fs.writeFileSync(tmpFile.name, 'first\nsecond\nthird\n');
+  writeFileSync(tmpFile.name, 'first\nsecond\nthird\n');
 
   spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
   spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
   spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
   spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
 
-  expect(fs.readFileSync(tmpFile.name).toString())
+  expect(readFileSync(tmpFile.name).toString())
     .toEqual('first\nsecond\nthird\n')
 });
 
