@@ -295,7 +295,7 @@ it('-n, -f  splits newlines and slurps file', () => {
   expect(parsedNoColor(result)).toEqual([ 'I am', 'test text.' ]);
 });
 
-it('-w, -f  splits whitespace and slurps file', () => {
+it('-w, -f  slurps file and splits whitespace', () => {
   const slrp = spawnSync('./index.js', ['-w', '-f', 'spec/file-for-newline-sentences.txt']);
 
   const result = slrp.stdout.toString().trim();
