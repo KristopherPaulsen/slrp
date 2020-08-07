@@ -321,7 +321,7 @@ describe('trimming, or not trimming, line endings', () => {
 
     const result = slrp.stdout.toString().trim();
 
-    expect(result).toEqual(3);
+    expect(result).toEqual("3");
   });
 });
 
@@ -336,7 +336,3 @@ describe('multiple piping', () => {
     expect(result).toBe("world");
   });
 });
-
-
-// check for line endings
-// check for line beginings
