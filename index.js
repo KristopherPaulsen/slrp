@@ -105,6 +105,7 @@ const main = async () => {
       describe: 'add bash completion file to unixish systems',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .wrap(null)
     .argv;
 
   if(args.updateBashCompletion) {
