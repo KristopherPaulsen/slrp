@@ -135,7 +135,9 @@ const main = async () => {
     return console.log(withColor(JSON.stringify(result, null, 2)));
   }
 
-  console.log(result);
+  (typeof result) === "string"
+    ? process.stdout.write(result)
+    : process.stdout.write(result.toString());
 }
 
 const runStringFuncs = ({ stdin, funcs, args }) => {
@@ -143,7 +145,9 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
 
   return stdin.on('line', line => {
     const output = funcs.reduce(evaluate, line);
+
     if(output === SLRP.EXCLUDE) return;
+
     process.stdout.write(output + EOL);
   });
 
@@ -203,13 +207,13 @@ const getNormalizedStdin = async (args) => {
       input: createReadStream(args.path)
     })
 
-    return result;
+    return result
   }
   else if(args.newline) {
     return (await getStdin()).trim().split(EOL);
   }
   else if(args['white-space']) {
-    return (await getStdin()).trim().split(" ");
+    return (await getStdin()).split(" ");
   }
   else if(args.linewise) {
     return readline.createInterface({

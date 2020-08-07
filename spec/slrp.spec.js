@@ -8,42 +8,42 @@ const parsedNoColor = str => JSON.parse(str.replace(/\u001b\[.*?m/g, ''));
 
 it('passes stdin to string function', () => {
   const slrp = spawnSync('./index.js', ['x => x.length'], {
-    input: 'hello',
+    input: 'abc',
   });
 
   const result = slrp.stdout.toString();
 
-  expect(result).toMatch('5');
+  expect(result).toMatch('3');
 });
 
 it('chains results of two function strings', () => {
   const slrp = spawnSync('./index.js', ['x => x.length', 'x => x + x'], {
-    input: 'hello',
+    input: 'abc',
   });
 
   const result = slrp.stdout.toString();
 
-  expect(result).toMatch('10');
+  expect(result).toMatch('6');
 });
 
 it('calls required functions from custom functions file (lodash global methods)', () => {
   const slrp = spawnSync('./index.js', ['size'], {
-    input: 'hello',
+    input: 'abc',
   });
 
   const result = slrp.stdout.toString();
 
-  expect(result).toMatch('5');
+  expect(result).toMatch('3');
 })
 
 it('chains functions and required custom functions together', () => {
   const slrp = spawnSync('./index.js', ['x => x + x', 'size'], {
-    input: 'hello',
+    input: 'abc',
   });
 
   const result = slrp.stdout.toString();
 
-  expect(result).toMatch('10');
+  expect(result).toMatch('6');
 })
 
 it('this  can access properties', () => {
@@ -287,18 +287,6 @@ it('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines',
     .toEqual('first\nsecond\nthird\n')
 });
 
-//fit('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines', () => {
-  //const tmpFile = tmp.fileSync();
-  //fs.writeFileSync(tmpFile.name, '{\n"foo":"bar"\n}');
-
-  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-  //spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-
-  //expect(fs.readFileSync(tmpFile.name).toString())
-    //.toEqual('{\n"foo":"bar"\n}')
-//});
-
 it('-n, -f  splits newlines and slurps file', () => {
   const slrp = spawnSync('./index.js', ['-f', 'spec/file-for-newline-sentences.txt', '-n']);
 
@@ -318,22 +306,22 @@ it('-w, -f  splits whitespace and slurps file', () => {
 describe('trimming, or not trimming, line endings', () => {
   it('does not trim line endings if present', () => {
     const slrp = spawnSync('./index.js', ['x => x.length'], {
-      input: 'hello\n'
+      input: 'abc\n'
     });
 
-    const result = slrp.stdout.toString().trim();
+    const result = slrp.stdout.toString();
 
-    expect(parsedNoColor(result)).toEqual(6);
+    expect(parsedNoColor(result)).toEqual(4);
   });
 
   it('does not add line endings', () => {
     const slrp = spawnSync('./index.js', ['x => x.length'], {
-      input: 'hello'
+      input: 'abc'
     });
 
     const result = slrp.stdout.toString().trim();
 
-    expect(parsedNoColor(result)).toEqual(5);
+    expect(result).toEqual(3);
   });
 });
 
