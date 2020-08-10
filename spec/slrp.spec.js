@@ -247,21 +247,21 @@ it('-i, -p  slurps up file, treats data as raw text, and edits inplace', () => {
 it('-l, -p  reads and applies transformations line by line, preserving newlines', () => {
   const slrp = spawnSync(
     './index.js',
-    ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x']
+    ['-l','-p', 'spec/file-for-checking-linewise.txt', 'x => x.toUpperCase()']
   );
 
   expect(slrp.stdout.toString())
-    .toEqual(readFileSync('spec/file-for-checking-linewise.txt').toString());
+    .toEqual(readFileSync('spec/file-for-checking-linewise.txt').toString().toUpperCase());
 });
 
 it('-l, -p  reads and applies transformations line by line, preserving newlines on one line', () => {
   const slrp = spawnSync(
     './index.js',
-    ['-l','-p', 'spec/file-for-checking-linewise-off-by-one.txt', 'x => x']
+    ['-l','-p', 'spec/file-for-checking-linewise-off-by-one.txt', 'x => x.toUpperCase()']
   );
 
   expect(slrp.stdout.toString())
-    .toEqual(readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString());
+    .toEqual(readFileSync('spec/file-for-checking-linewise-off-by-one.txt').toString().toUpperCase());
 });
 
 it('-l, -p  reads and excludes line using SLRP.EXCLUDE', () => {
@@ -278,13 +278,12 @@ it('-l, -i, -p  slurps up file, and "edits" multiple times preserving newlines',
   const tmpFile = tmp.fileSync();
   writeFileSync(tmpFile.name, 'first\nsecond\nthird\n');
 
-  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
-  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x']);
+  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x+1']);
+  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x+1']);
+  spawnSync( './index.js', ['-l', '-i','-p', tmpFile.name, 'x => x+1']);
 
   expect(readFileSync(tmpFile.name).toString())
-    .toEqual('first\nsecond\nthird\n')
+    .toEqual('first111\nsecond111\nthird111\n')
 });
 
 it('-n, -f  splits newlines and slurps file', () => {
