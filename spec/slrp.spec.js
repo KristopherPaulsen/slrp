@@ -208,12 +208,12 @@ it('-j  slurps json into a parsed, usable, object', () => {
 it('-l  reads line by line, preserving newlines', () => {
   const slrp = spawnSync(
     './index.js',
-    ['-l', 'x => x'],
+    ['-l', 'x => x.toUpperCase()'],
     { input: "first\nsecond\nthird\n" }
   );
 
   expect(slrp.stdout.toString())
-    .toEqual("first\nsecond\nthird\n");
+    .toEqual("FIRST\nSECOND\nTHIRD\n");
 });
 
 it('-i, -f  slurps up file, auto converts data, and edits inplace', () => {

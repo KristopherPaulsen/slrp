@@ -144,7 +144,7 @@ const main = async () => {
 const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
 
-  return stdin.on('line', line => {
+  if(!args.inplace) return stdin.on('line', line => {
     const output = funcs.reduce(evaluate, line);
 
     if(output === SLRP.EXCLUDE) return;
