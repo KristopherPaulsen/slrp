@@ -18,6 +18,7 @@ const chalk = require("chalk");
 const yargs = require('yargs');
 const convert = require('xml-js');
 const tmp = require('tmp');
+const YAML = require('YAML');
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 const XML_OPTIONS = {
@@ -190,6 +191,9 @@ const getNormalizedStdin = async (args) => {
       XML_OPTIONS
     );
   }
+  else if(args.file.match(/\.yaml|\.yml/)) {
+    return YAML.parse(readFileSync(args.file, 'utf8'));
+  }
   else if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
   }
@@ -231,6 +235,10 @@ const writeToFile = ({ args, result }) => {
 
   if(args.linewise) {
     return writeFileSync(filePath, result.join(EOL) + EOL, 'utf8');
+  }
+
+  if(filePath.match(/\.yaml|\.yml/)) {
+    return writeFileSync(filePath, YAML.stringify(result), 'utf8');
   }
 
   if(filePath.match(/\.json$|\.js$/)) {
