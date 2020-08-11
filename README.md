@@ -113,7 +113,8 @@ split stdin into array of strings by whitespace
 
 `-f`
 
-slurp file by type, auto-convert, and use as stdin
+slurp file by type, auto-convert, and use as stdin.
+Supports `.yaml, .yml, .js, .json, .xml`
 
 ```bash
   slrp -f 'path/to/file/here.json' 'ojbect => object.someKey'
