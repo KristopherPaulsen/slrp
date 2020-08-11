@@ -1,6 +1,6 @@
 # slrp
 
-> One line at a time is good, but what about all the lines at a time?
+> cli tool for editing text, json, yaml, and xml, as well as data munging through handy functional one-liners
 
 ## Getting Started
 
@@ -38,8 +38,7 @@ echo "Hello, World" | slrp 'x => x.split(" ")' 'x => x.map(word => word.length)'
 
 ## Property Assessor Shorthand
 
-You can also use the property assessor shorthand for easier manipulation.
-You can use "this", "[]" or "." for easier access
+You can also use the property assessor shorthand for easier manipulation. You can use `this, [],  .` for easier access
 
 ```bash
 echo "Hello, World" | slrp 'x => x.split(" ")' [0].length
@@ -63,7 +62,7 @@ slrp provides multiple flags for easier one-liners.
 
 `-j`
 
-slurp stdin string into parsed object.
+convert stdin string into parsed object.
 (See property assessor shorthand for easy access and manipulation)
 
 ```bash
@@ -113,7 +112,7 @@ split stdin into array of strings by whitespace
 
 `-f`
 
-slurp file by type, auto-convert, and use as stdin.
+slurp file by type, auto parse, and use as stdin.
 Supports `.yaml, .yml, .js, .json, .xml`
 
 ```bash
@@ -122,7 +121,7 @@ Supports `.yaml, .yml, .js, .json, .xml`
 
 `-p`
 
-slurp file without conversion, treated as text
+slurp file without auto parsing, treated as text
 
 ```bash
   slrp -p '/path/to/file/here' 'text => someFunction(text)'
@@ -138,7 +137,7 @@ slrp file and work line-by-line
 
 `-i -p`
 
-slurp file and edit in place (no conversion);
+slurp file and edit in place (no auto parsing);
 
 ```bash
   slrp -i -p '/path/to/file/here.txt' 'text => someFunction(text)'
@@ -146,7 +145,7 @@ slurp file and edit in place (no conversion);
 
 `-i -f`
 
-slurp file and edit in place with auto-conversion;
+slurp file and edit in place with auto parsing
 
 ```bash
   slrp -i -f '/path/to/file/here.json' 'json => ({ ...json, keyHere: "newValue" })'
@@ -154,7 +153,7 @@ slurp file and edit in place with auto-conversion;
 
 `-l -i -p`
 
-slurp file, edit in place (no conversion), line by line;
+slurp file, edit in place (no auto parsing), line-by-line;
 
 ```bash
   slrp -l -i -p '/path/to/file/here.txt' 'line => doSomethingToLine(line)'
@@ -162,7 +161,7 @@ slurp file, edit in place (no conversion), line by line;
 
 ## Bash autocompletion
 
-`slrp` can take advantage of autcompletion
+`slrp` can take advantage of bash autcompletion
 
 `slrp --update-bash-completion`
 
@@ -201,4 +200,3 @@ echo "Hello, World" | slrp 'split(" ")' 'map(size)' sum
 ## About
 
 Heavily inspired by fx and other node command line utilities
-
