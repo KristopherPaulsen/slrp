@@ -238,7 +238,9 @@ const getNormalizedStdin = async (args) => {
 const paseMalformedJson = (json, originalError) => {
   const attempts = [
     () => json.split(EOL).map(JSON.parse),
-    () => json.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse)
+    () => json.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse),
+    () => JSON.parse(json + "}"),
+    () => JSON.parse(json + "]"),
   ];
 
   for (const attempt of attempts) {
