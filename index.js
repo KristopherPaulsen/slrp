@@ -18,7 +18,7 @@ const chalk = require("chalk");
 const yargs = require('yargs');
 const convert = require('xml-js');
 const tmp = require('tmp');
-const YAML = require('YAML');
+const YAML = require('yaml');
 
 const CONFIG_PATH = path.join(os.homedir(), '.config', 'slrp');
 const XML_OPTIONS = {
