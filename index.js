@@ -187,7 +187,7 @@ const getNormalizedStdin = async (args) => {
     try {
       return JSON.parse(json);
     } catch(error) {
-      return hailMarryJsonParse(json, error);
+      return paseMalformedJson(json, error);
     }
   }
   else if(args.xml) {
@@ -235,15 +235,15 @@ const getNormalizedStdin = async (args) => {
   }
 }
 
-const hailMarryJsonParse = (badJson, originalError) => {
+const paseMalformedJson = (json, originalError) => {
   const attempts = [
-    () => badJson.split(EOL).map(JSON.parse),
-    () => badJson.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse)
+    () => json.split(EOL).map(JSON.parse),
+    () => json.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse)
   ];
 
   for (const attempt of attempts) {
     try {
-      return attempt(badJson);
+      return attempt(json);
     } catch {}
   }
 
