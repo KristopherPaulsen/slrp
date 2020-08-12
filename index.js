@@ -187,7 +187,7 @@ const getNormalizedStdin = async (args) => {
     try {
       return JSON.parse(json);
     } catch(error) {
-      return hailMarryJsonParse(json);
+      return hailMarryJsonParse(json, error);
     }
   }
   else if(args.xml) {
@@ -235,7 +235,7 @@ const getNormalizedStdin = async (args) => {
   }
 }
 
-const hailMarryJsonParse = (badJson) => {
+const hailMarryJsonParse = (badJson, originalError) => {
   const attempts = [
     () => badJson.split(EOL).map(JSON.parse),
     () => badJson.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse)
@@ -247,7 +247,7 @@ const hailMarryJsonParse = (badJson) => {
     } catch {}
   }
 
-  throw new Error('unable to parse JSON from stdin' + '\n' + json)
+  throw originalError;
 }
 
 const writeToFile = ({ args, result }) => {
