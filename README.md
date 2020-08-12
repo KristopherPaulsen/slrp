@@ -1,6 +1,6 @@
 # slrp
 
-> cli tool for editing text, json, yaml, and xml, as well as data munging through handy functional one-liners
+> Command line tool for editing text, json, yaml, and xml, as well as data munging through handy functional one-liners
 
 ## Getting Started
 

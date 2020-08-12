@@ -1,7 +1,7 @@
 {
   "name": "@kcpaulsen/slrp",
-  "version": "2.2.13",
-  "description": "Making node one-liners great again",
+  "version": "2.2.14",
+  "description": "Command line tool for editing text, json, yaml, and xml, as well as data munging through handy functional one-liners",
   "main": "./index.js",
   "scripts": {
     "test": "jest --colors",
