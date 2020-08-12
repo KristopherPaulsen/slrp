@@ -183,7 +183,12 @@ const evaluate = (result, func) => {
 
 const getNormalizedStdin = async (args) => {
   if(args.json) {
-    return JSON.parse(await getStdin());
+    const json = (await getStdin()).trim();
+    try {
+      return JSON.parse(json);
+    } catch(error) {
+      return hailMarryJsonParse(json);
+    }
   }
   else if(args.xml) {
     return convert.xml2js(
@@ -228,6 +233,21 @@ const getNormalizedStdin = async (args) => {
   else {
     return await getStdin();
   }
+}
+
+const hailMarryJsonParse = (badJson) => {
+  const attempts = [
+    () => badJson.split(EOL).map(JSON.parse),
+    () => badJson.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse)
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      return attempt(badJson);
+    } catch {}
+  }
+
+  throw new Error('unable to parse JSON from stdin' + '\n' + json)
 }
 
 const writeToFile = ({ args, result }) => {
