@@ -5,7 +5,7 @@ const {
   createReadStream,
   writeFileSync,
   readFileSync,
-  copyFile
+  copyFileSync
 } = require('fs');
 const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
@@ -170,7 +170,7 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
 
       writer.write(output + EOL)
     })
-    .on('close', () => copyFile(tmpFile.name, args.path, (error) => { throw error }));
+    .on('close', () => copyFileSync(tmpFile.name, args.path, (error) => { throw error.message }));
 }
 
 const evaluate = (result, func) => {
@@ -203,7 +203,7 @@ const getNormalizedStdin = async (args) => {
     );
   }
   else if(args.yaml) {
-    return YAML.parse(await getStdin())
+    return YAML.parse(await getStdin(), 'utf8')
   }
   else if(args.file.match(/\.yaml|\.yml/)) {
     return YAML.parse(readFileSync(args.file, 'utf8'));
