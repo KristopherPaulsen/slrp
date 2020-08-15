@@ -151,28 +151,26 @@ const main = async () => {
 const runStringFuncs = ({ stdin, funcs, args }) => {
   if(!args.linewise) return funcs.reduce(evaluate, stdin);
 
-  if(!args.inplace) return stdin.on('line', line => {
+  const file = args.inplace
+    ? tmp.fileSync()
+    : null;
+
+  const writer = args.inplace
+    ? createWriteStream(file.name, { flags: 'a' })
+    : null
+
+  return stdin.on('line', line => {
     const output = funcs.reduce(evaluate, line);
 
     if(output === SLRP.EXCLUDE) return;
 
-    process.stdout.write(output + EOL);
+    args.inplace
+      ? writer.write(output + EOL)
+      : process.stdout.write(output + EOL);
+  })
+  .on('close', () => {
+      if(args.inplace) createReadStream(file.name).pipe(createWriteStream(args.path))
   });
-
-  const tmpFile = tmp.fileSync();
-  const writer = createWriteStream(tmpFile.name, { flags: 'a' });
-
-  stdin
-    .on('line', line => {
-      const output = funcs.reduce(evaluate, line);
-
-      if(output === SLRP.EXCLUDE) return;
-
-      writer.write(output + EOL)
-    })
-    .on('close', () =>
-      createReadStream(tmpFile.name).pipe(createWriteStream(args.path))
-    );
 }
 
 const evaluate = (result, func) => {
