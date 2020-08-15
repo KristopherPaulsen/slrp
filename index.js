@@ -131,7 +131,7 @@ const main = async () => {
     funcs: args._,
   })
 
-  if(args.linewise || !result) {
+  if(!result) {
     return;
   }
 
