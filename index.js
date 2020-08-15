@@ -155,18 +155,16 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
     ? tmp.fileSync()
     : null;
 
-  const writer = args.inplace
+  const outstream = args.inplace
     ? createWriteStream(file.name, { flags: 'a' })
-    : null
+    : process.stdout;
 
-  return stdin.on('line', line => {
+  stdin.on('line', line => {
     const output = funcs.reduce(evaluate, line);
 
     if(output === SLRP.EXCLUDE) return;
 
-    args.inplace
-      ? writer.write(output + EOL)
-      : process.stdout.write(output + EOL);
+    return outstream.write(output + EOL)
   })
   .on('close', () => {
       if(args.inplace) createReadStream(file.name).pipe(createWriteStream(args.path))
