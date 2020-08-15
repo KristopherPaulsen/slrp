@@ -164,7 +164,7 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
 
     if(output === SLRP.EXCLUDE) return;
 
-    return outstream.write(output + EOL)
+    outstream.write(output + EOL)
   })
   .on('close', () => {
       if(args.inplace) createReadStream(file.name).pipe(createWriteStream(args.path))
