@@ -191,7 +191,7 @@ const getNormalizedStdin = async (args) => {
     try {
       return JSON.parse(json);
     } catch(error) {
-      return paseMalformedJson(json, error);
+      return parseMalformedJson(json, error);
     }
   }
   else if(args.xml) {
@@ -237,12 +237,11 @@ const getNormalizedStdin = async (args) => {
       input: process.stdin,
     })
   }
-  else {
-    return await getStdin();
-  }
+
+  return await getStdin();
 }
 
-const paseMalformedJson = (json, originalError) => {
+const parseMalformedJson = (json, originalError) => {
   const attempts = [
     () => json.split(EOL).map(JSON.parse),
     () => json.split(/(?<=}|])\s?(?={|])/gi).map(JSON.parse),
