@@ -170,7 +170,9 @@ const runStringFuncs = ({ stdin, funcs, args }) => {
 
       writer.write(output + EOL)
     })
-    .on('close', () => copyFileSync(tmpFile.name, args.path, (error) => { throw error.message }));
+    .on('close', () =>
+      createReadStream(tmpFile.name).pipe(createWriteStream(args.path))
+    );
 }
 
 const evaluate = (result, func) => {
