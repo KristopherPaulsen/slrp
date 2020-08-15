@@ -70,6 +70,12 @@ const main = async () => {
       describe: 'parse incoming json into object',
       coerce: arg => typeof(arg) !== undefined,
     })
+    .option('yaml', {
+      alias: 'y',
+      type: 'boolean',
+      describe: 'parse incoming yaml into object',
+      coerce: arg => typeof(arg) !== undefined,
+    })
     .option('file', {
       alias: 'f',
       type: 'string',
@@ -195,6 +201,9 @@ const getNormalizedStdin = async (args) => {
       await getStdin(),
       XML_OPTIONS
     );
+  }
+  else if(args.yaml) {
+    return YAML.parse(await getStdin())
   }
   else if(args.file.match(/\.yaml|\.yml/)) {
     return YAML.parse(readFileSync(args.file, 'utf8'));

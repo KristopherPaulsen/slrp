@@ -60,9 +60,9 @@ echo "Hello" | slrp 'split("\w")' this.length
 
 slrp provides multiple flags for easier one-liners.
 
-`-j`
+`-j, -x, -y`
 
-convert stdin string into parsed object.
+convert stdin string (json, xml, yaml) into parsed object.
 (See property assessor shorthand for easy access and manipulation)
 
 ```bash
