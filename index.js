@@ -7,6 +7,7 @@ const {
   readFileSync,
   copyFileSync
 } = require('fs');
+const iconv = require('iconv-lite');
 const { EOL, ...os } = require('os');
 const { completionTemplate } = require('./lib/bash-completion-template.js');
 const { withColor } = require('./lib/with-color.js')
@@ -78,7 +79,6 @@ const main = async () => {
     })
     .option('file', {
       alias: 'f',
-      type: 'string',
       describe: 'filepath to use as stdin (performs auto-conversions by filetype)',
       default: '',
       coerce: arg => arg ? path.resolve(arg) : '',
@@ -93,6 +93,16 @@ const main = async () => {
       type: 'boolean',
       describe: 'whether or not to edit file in place',
       coerce: arg => typeof(arg) !== undefined,
+    })
+    .option('encode', {
+      alias: 'encode',
+      type: 'string',
+      describe: 'encode text using chosen charset',
+    })
+    .option('decode', {
+      alias: 'decode',
+      type: 'string',
+      describe: 'encode text using chosen charset',
     })
     .option('linewise', {
       alias: 'l',
@@ -194,28 +204,41 @@ const getNormalizedStdin = async (args) => {
       return parseMalformedJson(json, error);
     }
   }
-  else if(args.xml) {
+
+  if(args.xml) {
     return convert.xml2js(
       await getStdin(),
       XML_OPTIONS
     );
   }
-  else if(args.yaml) {
+
+  if(args.encode || args.decode) {
+    const stdin = await getStdin();
+    return args.encode
+      ? iconv.encode(stdin, args.encode).toString()
+      : iconv.decode(Buffer.from(stdin), args.decode).toString();
+  }
+
+  if(args.yaml) {
     return YAML.parse(await getStdin(), 'utf8')
   }
-  else if(args.file.match(/\.yaml|\.yml/)) {
+
+  if(args.file.match(/\.yaml|\.yml/)) {
     return YAML.parse(readFileSync(args.file, 'utf8'));
   }
-  else if(args.file.match(/\.json$|\.js$/)) {
+
+  if(args.file.match(/\.json$|\.js$/)) {
     return require(args.file);
   }
-  else if(args.file.match(/\.xml$/)) {
+
+  if(args.file.match(/\.xml$/)) {
     return convert.xml2js(
       readFileSync(args.file, 'utf8'),
       XML_OPTIONS
     );
   }
-  else if(args.file || args.path) {
+
+  if(args.file || args.path) {
     const result = readFileSync(args.file || args.path, 'utf8');
 
     if (args.newline) return result.trim().split(EOL);
@@ -226,13 +249,16 @@ const getNormalizedStdin = async (args) => {
 
     return result
   }
-  else if(args.newline) {
+
+  if(args.newline) {
     return (await getStdin()).trim().split(EOL);
   }
-  else if(args['white-space']) {
+
+  if(args['white-space']) {
     return (await getStdin()).split(" ");
   }
-  else if(args.linewise) {
+
+  if(args.linewise) {
     return readline.createInterface({
       input: process.stdin,
     })
