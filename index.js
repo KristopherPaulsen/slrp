@@ -94,8 +94,8 @@ const main = async () => {
       describe: 'whether or not to edit file in place',
       coerce: arg => typeof(arg) !== undefined,
     })
-    .option('encode', {
-      alias: 'encode',
+    .option('encode-text', {
+      alias: 'encode-text',
       type: 'string',
       describe: 'encode text using chosen charset',
     })
