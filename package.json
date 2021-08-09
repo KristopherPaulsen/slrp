@@ -9,6 +9,9 @@
     "test:int": "./scripts/run-dockerized-slrp-tests.sh",
     "pub": "npm run test:int && npm publish"
   },
+   "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "/index.js",
     "/lib"
