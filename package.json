@@ -1,0 +1,43 @@
+{
+  "name": "@kristopherpaulsen/slrp",
+  "version": "2.3.2",
+  "description": "Command line tool for editing text, json, yaml, and xml, as well as data munging through handy functional one-liners",
+  "main": "./index.js",
+  "scripts": {
+    "test": "jest --colors",
+    "test:watch": "jest --colors --watch",
+    "test:int": "./scripts/run-dockerized-slrp-tests.sh",
+    "pub": "npm run test:int && npm publish"
+  },
+  "files": [
+    "/index.js",
+    "/lib"
+  ],
+  "keywords": [
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kristopherpaulsen/slrp.git"
+  },
+  "author": "Kristopher C. Paulsen",
+  "license": "MIT",
+  "bin": {
+    "slrp": "./index.js"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "esm": "^3.2.25",
+    "get-stdin": "^7.0.0",
+    "iconv-lite": "^0.6.3",
+    "indent-string": "^4.0.0",
+    "json-colorizer": "^2.2.1",
+    "tmp": "^0.2.1",
+    "xml-js": "^1.6.11",
+    "yaml": "^1.10.0",
+    "yargs": "^15.3.1"
+  }
+}
