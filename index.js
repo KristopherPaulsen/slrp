@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require = require("esm")(module);
+global.require = require("esm")(module);
 const {
   createWriteStream,
   createReadStream,
